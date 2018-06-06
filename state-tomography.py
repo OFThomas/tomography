@@ -40,11 +40,6 @@
 #                 p = U * |         | * U^+
 #                         | 0   1-x |
 #                          -       -
-#                            -      -
-#                           | a       |
-#                 where U = |        |
-#                           |        |
-#                            -      -
 #
 #                 x should be picked in such a way
 #                 that the resulting distribution for
