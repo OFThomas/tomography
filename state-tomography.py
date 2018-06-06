@@ -122,6 +122,7 @@ print("The eigenvalues are:", np.around(np.linalg.eig(dens)[0],dp), "which shoul
 # <+1| is expressed as [a,b]^T, and
 # |+1><+1| = [a,b][a,b]^T. 
 #
+I = np.matrix([[1,0],[0,1]])
 X = np.matrix([[0,1],[1,0]])
 Y = np.matrix([[0,-1j],[1j,0]])
 Z = np.matrix([[1,0],[0,-1]])
@@ -157,3 +158,46 @@ print("The probability of getting +1 on Y is: ", np.around(p_Y_0,dp))
 print("The probability of getting -1 on Y is: ", np.around(p_Y_1,dp))
 print("The probability of getting +1 on Z is: ", np.around(p_Z_0,dp))
 print("The probability of getting -1 on Z is: ", np.around(p_Z_1,dp))
+# Generate the measurement data
+prob_X = [p_X_0, p_X_1]
+meas_X = np.random.choice(X_values, 1000, prob_X);
+prob_Y = [p_Y_0, p_Y_1]
+meas_Y = np.random.choice(Y_values, 1000, prob_Y);
+prob_Z = [p_Z_0, p_Z_1]
+meas_Z = np.random.choice(Y_values, 1000, prob_Y);
+#print("The simulated X measurements are",meas_X)   This is too long to
+#print("The simulated Y measurements are",meas_Y)   print out
+#print("The simulated Z measurements are",meas_Z)
+
+################
+## SIMULATION ##
+################
+
+# Step 3: Estimate p using the simulated data
+#
+# The estimator here involves computing the
+# mean of data sets, and using them as
+# estimates for tr(pX), tr(pY) and tr(pZ)
+#
+# Then tr(pI) is computed by requiring that
+# the density matrix be normalised
+mean_X = np.mean(meas_X)
+print("The mean of X is:", np.around(mean_X,dp))
+mean_Y = np.mean(meas_Y)
+print("The mean of Y is:", np.around(mean_Y,dp))
+mean_Z = np.mean(meas_Z)
+print("The mean of Z is:", np.around(mean_Z,dp))
+# The estimate for p is given by
+dens_est = mean_X * X + mean_Y * Y + mean_Z * Z
+# Compute the trace
+I = I.astype(dtype=np.complex)
+print(I)
+print(dens_est)
+mean_I = np.matrix.trace(dens_est)
+print(mean_I)
+#dens_est = dens_est + mean_I * I
+#
+#print("The estimate for p is:\n\n",dens_est,"\n")
+#
+#
+#print("The original density matrix was:\n\n", dens)
