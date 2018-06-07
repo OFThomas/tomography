@@ -64,7 +64,6 @@ def simulate(dens,meas,dp):
     # Generate the measurement data
     prob =  np.zeros(3,dtype=complex).tolist()
     meas = prob
-    print("P:!!",p)
     for n in range(3):
         meas[n] = np.random.choice(eigenvalues[n], 100000, p=p[n]);
 
