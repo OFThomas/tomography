@@ -3,9 +3,11 @@
 #
 # Date created: 7th June 2018
 #
-# Language:    Python 3
+# Language: Python 3
 #
-# Overview:    
+# Overview: This file contains various functions for
+#           generating simulated states and measurement
+#           data. 
 #
 # Details:
 #
@@ -17,7 +19,29 @@ import numpy as np
 from scipy.stats import unitary_group as ug
 from input import *
 
+# Function: density(dp)
+#   Generate a density matrix. The functions
+#   provides the user with the option to 
+#   enter the matrix manually, or it generates
+#   the matrix at random. 
+#
 def density(dp):
+    response = yes_or_no("Do you want to enter a density matrix manually?")
+    if response == 0:
+        # Request matrix dimension
+        while 1==1:
+            dim = get_user_value("Specify the matrix dimension", "integer")
+            if dim >= 2: 
+                if bin(dim).count("1") == 1: break
+                else: print("Matrix dimension should be power of 2")  
+            else: print("Matrix dimension must be at least 2")
+        # Populate matrix
+        dens = np.asmatrix(np.zeros((dim,dim), dtype=complex))
+        for m in np.ndindex((dim,dim)):
+            dens[m] = get_user_value("Input element " + str(m), "complex")
+        print(dens)
+
+    # Generate a random matrix
     x = np.random.uniform(0,1) # Generate x
     print("The value of x is: ", x, "\n")
     realMat = np.random.random((2,2))
