@@ -99,7 +99,7 @@ diag = np.matrix([[x,0],[0,1-x]])
 dens = U * diag * U_dag
 print("The density matrix is:\n\n", dens,"\n")
 # Check the density matrix
-print("The trace of the density matrix is:", np.around(np.matrix.trace(dens),dp))
+print("The trace of the density matrix is:", np.around(np.trace(dens),dp))
 print("The eigenvalues are:", np.around(np.linalg.eig(dens)[0],dp), "which should both be positive.")
 
 # Step 2: Generate measurement data
@@ -146,12 +146,12 @@ proj_Z_1 = Z_vectors[:,1] * np.matrix.getH(Z_vectors[:,1])
 print("The projector for +1 is:\n\n", proj_X_0,",\n")
 print("and the projector for -1 is:\n\n", proj_X_1,".\n")
 # The probabilities are computed as follows
-p_X_0 = np.matrix.trace(dens * proj_X_0)
-p_X_1 = np.matrix.trace(dens * proj_X_1)
-p_Y_0 = np.matrix.trace(dens * proj_Y_0)
-p_Y_1 = np.matrix.trace(dens * proj_Y_1)
-p_Z_0 = np.matrix.trace(dens * proj_Z_0)
-p_Z_1 = np.matrix.trace(dens * proj_Z_1)
+p_X_0 = np.trace(dens * proj_X_0)
+p_X_1 = np.trace(dens * proj_X_1)
+p_Y_0 = np.trace(dens * proj_Y_0)
+p_Y_1 = np.trace(dens * proj_Y_1)
+p_Z_0 = np.trace(dens * proj_Z_0)
+p_Z_1 = np.trace(dens * proj_Z_1)
 print("The probability of getting +1 on X is: ", np.around(p_X_0,dp))
 print("The probability of getting -1 on X is: ", np.around(p_X_1,dp))
 print("The probability of getting +1 on Y is: ", np.around(p_Y_0,dp))
@@ -160,17 +160,21 @@ print("The probability of getting +1 on Z is: ", np.around(p_Z_0,dp))
 print("The probability of getting -1 on Z is: ", np.around(p_Z_1,dp))
 # Generate the measurement data
 prob_X = [p_X_0, p_X_1]
-meas_X = np.random.choice(X_values, 1000, prob_X);
+print("HERE:", prob_X,X_values)
+meas_X = np.random.choice(X_values, 100, p=prob_X);
 prob_Y = [p_Y_0, p_Y_1]
-meas_Y = np.random.choice(Y_values, 1000, prob_Y);
+print("HERE:", prob_Y,Y_values)
+meas_Y = np.random.choice(Y_values, 100, p=prob_Y);
 prob_Z = [p_Z_0, p_Z_1]
-meas_Z = np.random.choice(Y_values, 1000, prob_Y);
-#print("The simulated X measurements are",meas_X)   This is too long to
-#print("The simulated Y measurements are",meas_Y)   print out
+print("HERE:", prob_Z,Z_values)
+meas_Z = np.random.choice(Z_values, 100, p=prob_Z);   
+    
+#print("The simulated X measurements are",meas_X)  # This is too long to
+#print("The simulated Y measurements are",meas_Y)  # print out
 #print("The simulated Z measurements are",meas_Z)
 
 ################
-## SIMULATION ##
+## ESTIMATION ##
 ################
 
 # Step 3: Estimate p using the simulated data
@@ -188,16 +192,7 @@ print("The mean of Y is:", np.around(mean_Y,dp))
 mean_Z = np.mean(meas_Z)
 print("The mean of Z is:", np.around(mean_Z,dp))
 # The estimate for p is given by
-dens_est = mean_X * X + mean_Y * Y + mean_Z * Z
-# Compute the trace
-I = I.astype(dtype=np.complex)
-print(I)
-print(dens_est)
-mean_I = np.matrix.trace(dens_est)
-print(mean_I)
-#dens_est = dens_est + mean_I * I
-#
-#print("The estimate for p is:\n\n",dens_est,"\n")
-#
-#
-#print("The original density matrix was:\n\n", dens)
+dens_est = (mean_X * X + mean_Y * Y + mean_Z * Z + I)/2
+print("The estimate for p is:\n\n",dens_est,"\n")
+print("TRACE",np.trace(dens_est))
+print("The original density matrix was:\n\n", dens)
