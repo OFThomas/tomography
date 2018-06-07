@@ -26,7 +26,7 @@ from input import *
 #   the matrix at random. 
 #
 def density(dp):
-    response = yes_or_no("Do you want to enter a density matrix manually?")
+    response = yes_or_no("Do you want to enter a density matrix manually? ")
     if response == 0:
         # Request matrix dimension
         while 1==1:
@@ -37,9 +37,13 @@ def density(dp):
             else: print("Matrix dimension must be at least 2")
         # Populate matrix
         dens = np.asmatrix(np.zeros((dim,dim), dtype=complex))
-        for m in np.ndindex((dim,dim)):
-            dens[m] = get_user_value("Input element " + str(m), "complex")
-        print(dens)
+        while 1==1:
+            for m in np.ndindex((dim,dim)):
+                dens[m] = get_user_value("Input element " + str(m), "complex")
+            # Print and check the density matrix
+            response = yes_or_no("Is this the correct density matrix?\n\n"+str(dens)+"\n\n")
+            if response == 0: break
+            else: print("Enter the density matrix again.")
 
     # Generate a random matrix
     x = np.random.uniform(0,1) # Generate x

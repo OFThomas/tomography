@@ -15,7 +15,7 @@
 
 # Ask the user a yes/no question
 def yes_or_no(string):
-    response = input("\n" + string + " [y/n]")
+    response = input("\n" + string + "[y/n] ")
     while 1==1:
         if response == 'y' or response == "Y":
             print("YES")
@@ -23,6 +23,8 @@ def yes_or_no(string):
         elif response == 'n' or response == "N":
             print("NO")
             return 1
+        elif response == 'exit' or response == "quit":
+            exit()
         else:
             print(response,"isn't a valid response; try again... ")
             response = input("\n" + string + " [y/n]")
