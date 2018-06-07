@@ -1,3 +1,4 @@
+#!/usr/local/bin/python3
 #############################################################
 # Title: Quantum state tomography simulation
 #
@@ -65,6 +66,7 @@
 #############################################################
 
 # Include
+import os
 import importlib
 import numpy as np
 from scipy.stats import unitary_group as ug
@@ -133,6 +135,8 @@ meas_X, meas_Y, meas_Z = simulation.simulate(dens,meas,dp)
 import estimation
 importlib.reload(estimation)
 dens_est = estimation.estimate_rho(I, X, Y, Z, meas_X, meas_Y, meas_Z, dp)
+
+os.system('clear')
 
 print("The estimate for p is:\n\n",dens_est,"\n")
 print("The original density matrix was:\n\n", dens,"\n")
