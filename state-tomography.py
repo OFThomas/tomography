@@ -1,7 +1,9 @@
 #############################################################
 # Title: Quantum state tomography simulation
 #
-# Language:    Python
+# Date created: 6th June 2018
+#
+# Language:    Python 3
 #
 # Overview:    Simulation of linear quantum state
 #              tomography on randomly generated
@@ -37,7 +39,7 @@
 #
 #                          -       -
 #                         | x     0 |
-#                 p = U * |         | * U^+
+#                 p = U * |         | * U^
 #                         | 0   1-x |
 #                          -       -
 #
@@ -58,11 +60,12 @@
 #                 using the data generated in step
 #                 2. Then compare p~ with p.
 #
-# Date created: 6th June 2018
+# Usage: python3 state-tomography.py
 #
 #############################################################
 
 # Include
+import importlib
 import numpy as np
 from scipy.stats import unitary_group as ug
 
@@ -83,25 +86,10 @@ from scipy.stats import unitary_group as ug
 # to keep using the dp variable.
 #
 dp = 5
-x = np.random.uniform(0,1) # Generate x
-print("The value of x is: ", x, "\n")
-realMat = np.random.random((2,2))
-U = ug.rvs(2) # Random unitary 
-print("The random unitary is: \n")
-print(U,"\n")
-# Check that U is actually unitary
-U_dag = np.matrix.getH(U)
-test = np.matmul(U_dag,U)
-print("Check that U * U^+ = I: \n")
-print(np.around(test,dp),"\n")
-# Compute the density matrix
-diag = np.matrix([[x,0],[0,1-x]])
-dens = U * diag * U_dag
-print("The density matrix is:\n\n", dens,"\n")
-# Check the density matrix
-print("The trace of the density matrix is:", np.around(np.trace(dens),dp))
-print("The eigenvalues are:", np.around(np.linalg.eig(dens)[0],dp), "which should both be positive.")
-
+import simulation
+importlib.reload(simulation)
+dens = simulation.density(dp)
+    
 # Step 2: Generate measurement data
 #
 # This step uses the following single
@@ -126,52 +114,9 @@ I = np.matrix([[1,0],[0,1]])
 X = np.matrix([[0,1],[1,0]])
 Y = np.matrix([[0,-1j],[1j,0]])
 Z = np.matrix([[1,0],[0,-1]])
-print("The measurements are X, Y and Z:\n\n",X,"\n\n",Y,"\n\n and \n\n",Z,".\n")
-# Compute the eigenvectors and eigenvalues of X, Y and Z
-X_values, X_vectors = np.linalg.eig(X)
-Y_values, Y_vectors = np.linalg.eig(Y)
-Z_values, Z_vectors = np.linalg.eig(Z)
-print("The eigenvectors of X are\n\n", X_vectors,"\n")
-print("And the eigenvalues of X are:", X_values)
-# Python stores the eigenvectors as the columns of a matrix, so
-# a corresponding eigenvalue-eigenvector pair is accessed
-# like X_values[n], X_vectors[:,n] where n is 0 or 1.
-# Compute the projectors for X, Y and Z:
-proj_X_0 = X_vectors[:,0] * np.matrix.getH(X_vectors[:,0])
-proj_X_1 = X_vectors[:,1] * np.matrix.getH(X_vectors[:,1])
-proj_Y_0 = Y_vectors[:,0] * np.matrix.getH(Y_vectors[:,0])
-proj_Y_1 = Y_vectors[:,1] * np.matrix.getH(Y_vectors[:,1])
-proj_Z_0 = Z_vectors[:,0] * np.matrix.getH(Z_vectors[:,0])
-proj_Z_1 = Z_vectors[:,1] * np.matrix.getH(Z_vectors[:,1])
-print("The projector for +1 is:\n\n", proj_X_0,",\n")
-print("and the projector for -1 is:\n\n", proj_X_1,".\n")
-# The probabilities are computed as follows
-p_X_0 = np.trace(dens * proj_X_0)
-p_X_1 = np.trace(dens * proj_X_1)
-p_Y_0 = np.trace(dens * proj_Y_0)
-p_Y_1 = np.trace(dens * proj_Y_1)
-p_Z_0 = np.trace(dens * proj_Z_0)
-p_Z_1 = np.trace(dens * proj_Z_1)
-print("The probability of getting +1 on X is: ", np.around(p_X_0,dp))
-print("The probability of getting -1 on X is: ", np.around(p_X_1,dp))
-print("The probability of getting +1 on Y is: ", np.around(p_Y_0,dp))
-print("The probability of getting -1 on Y is: ", np.around(p_Y_1,dp))
-print("The probability of getting +1 on Z is: ", np.around(p_Z_0,dp))
-print("The probability of getting -1 on Z is: ", np.around(p_Z_1,dp))
-# Generate the measurement data
-prob_X = [p_X_0, p_X_1]
-print("HERE:", prob_X,X_values)
-meas_X = np.random.choice(X_values, 100, p=prob_X);
-prob_Y = [p_Y_0, p_Y_1]
-print("HERE:", prob_Y,Y_values)
-meas_Y = np.random.choice(Y_values, 100, p=prob_Y);
-prob_Z = [p_Z_0, p_Z_1]
-print("HERE:", prob_Z,Z_values)
-meas_Z = np.random.choice(Z_values, 100, p=prob_Z);   
-    
-#print("The simulated X measurements are",meas_X)  # This is too long to
-#print("The simulated Y measurements are",meas_Y)  # print out
-#print("The simulated Z measurements are",meas_Z)
+meas = np.array([X,Y,Z,I])
+
+meas_X, meas_Y, meas_Z = simulation.simulate(dens,meas,dp)
 
 ################
 ## ESTIMATION ##
@@ -185,14 +130,9 @@ meas_Z = np.random.choice(Z_values, 100, p=prob_Z);
 #
 # Then tr(pI) is computed by requiring that
 # the density matrix be normalised
-mean_X = np.mean(meas_X)
-print("The mean of X is:", np.around(mean_X,dp))
-mean_Y = np.mean(meas_Y)
-print("The mean of Y is:", np.around(mean_Y,dp))
-mean_Z = np.mean(meas_Z)
-print("The mean of Z is:", np.around(mean_Z,dp))
-# The estimate for p is given by
-dens_est = (mean_X * X + mean_Y * Y + mean_Z * Z + I)/2
+import estimation
+importlib.reload(estimation)
+dens_est = estimation.estimate_rho(I, X, Y, Z, meas_X, meas_Y, meas_Z, dp)
+
 print("The estimate for p is:\n\n",dens_est,"\n")
-print("TRACE",np.trace(dens_est))
-print("The original density matrix was:\n\n", dens)
+print("The original density matrix was:\n\n", dens,"\n")
