@@ -41,8 +41,3 @@ def get_user_value(string, type):
             return user_val
         except ValueError:
             print(response,"is not of type","[" + type + "]:","; try again...")
-
-# Get float from the user
-# NEEDS TESTING!!
-def get_user_float(string):
-    return float(input(string + " "))
