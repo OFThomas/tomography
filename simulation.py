@@ -15,6 +15,7 @@
 
 import numpy as np
 from scipy.stats import unitary_group as ug
+from input import *
 
 def density(dp):
     x = np.random.uniform(0,1) # Generate x
@@ -38,6 +39,7 @@ def density(dp):
     return dens
 
 def simulate(dens,meas,dp):
+    yes_or_no("Is it correct")
     print("The measurements are X, Y and Z:\n\n",meas[0],"\n\n",meas[1],"\n\n and \n\n",meas[2],".\n")
     print("X is",meas[0])
     eigenvalues =  np.zeros(3,dtype=complex).tolist()
@@ -64,7 +66,9 @@ def simulate(dens,meas,dp):
     # Generate the measurement data
     prob =  np.zeros(3,dtype=complex).tolist()
     meas = prob
+    # User input: select number of measurements
+    samples = get_user_int("Choose the number of measurements in each basis:")
     for n in range(3):
-        meas[n] = np.random.choice(eigenvalues[n], 100000, p=p[n]);
+        meas[n] = np.random.choice(eigenvalues[n], samples, p=p[n]);
 
     return meas[0], meas[1], meas[2]
