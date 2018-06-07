@@ -26,6 +26,11 @@ from input import *
 #   the matrix at random. 
 #
 def density(dp):
+    print("===== Density matrix generation =====\n")
+    print("A density matrix is required to test")
+    print("the state tomography proceedure. It")
+    print("can be input manually or generated")
+    print("randomly.")
     response = yes_or_no("Do you want to enter a density matrix manually? ")
     if response == 0:
         # Request matrix dimension
@@ -44,27 +49,40 @@ def density(dp):
             response = yes_or_no("Is this the correct density matrix?\n\n"+str(dens)+"\n\n")
             if response == 0: break
             else: print("Enter the density matrix again.")
-
-    # Generate a random matrix
-    x = np.random.uniform(0,1) # Generate x
-    print("The value of x is: ", x, "\n")
-    realMat = np.random.random((2,2))
-    U = ug.rvs(2) # Random unitary 
-    print("The random unitary is: \n")
-    print(U,"\n")
-    # Check that U is actually unitary
-    U_dag = np.matrix.getH(U)
-    test = np.matmul(U_dag,U)
-    print("Check that U * U^+ = I: \n")
-    print(np.around(test,dp),"\n")
-    # Compute the density matrix
-    diag = np.matrix([[x,0],[0,1-x]])
-    dens = U * diag * U_dag
-    print("The density matrix is:\n\n", dens,"\n")
-    # Check the density matrix
-    print("The trace of the density matrix is:", np.around(np.trace(dens),dp))
-    print("The eigenvalues are:", np.around(np.linalg.eig(dens)[0],dp), "which should both be positive.")
-    return dens
+    else: 
+        # Generate a random matrix
+        print("\nThe random density matrix will be generated")
+        print("by generating random eignevalues x and 1-x")
+        print("and then conjugating the resulting diagonal")
+        print("matrix by a random unitary matrix U\n")
+        x = np.random.uniform(0,1) # Generate x
+        while 1==1:
+            print("Picked random eigenvalues:\n\n\t ",x,",",1-x)
+            realMat = np.random.random((2,2))
+            U = np.asmatrix(ug.rvs(2)) # Random unitary 
+            print("\nThe random matrix U is: \n")
+            print(U,"\n")
+            # Check that U is actually unitary
+            U_dag = np.matrix.getH(U)
+            if(U_dag * U - np.asmatrix([[1,0],[0,1]]) > 1e-5).any(): 
+                print("Bug: failed to generate unitary matrix")
+                print("Exiting")
+                exit(1)
+            #print("Check that U * U^+ = I: \n")
+            #print(np.around(test,dp),"\n")
+            # Compute the density matrix
+            diag = np.matrix([[x,0],[0,1-x]])
+            dens = U * diag * U_dag
+            print("The density matrix is:\n\n", dens,"\n")
+            # Check the density matrix
+            print("The trace of the density matrix is", np.around(np.trace(dens),dp), "which should be 1.")
+            print("The eigenvalues", np.around(np.linalg.eig(dens)[0],dp), "should both be positive.")
+            response = yes_or_no("Does everything look OK? ")
+            if response == 0: break
+            elif yes_or_no("Try to generate density matrix again? ") == 0:
+                print("Attempting to generate density matrix...")
+            else: exit()
+        return dens
 
 def simulate(dens,meas,dp):
     yes_or_no("Is it correct")
