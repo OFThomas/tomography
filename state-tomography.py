@@ -116,9 +116,10 @@ I = np.matrix([[1,0],[0,1]])
 X = np.matrix([[0,1],[1,0]])
 Y = np.matrix([[0,-1j],[1j,0]])
 Z = np.matrix([[1,0],[0,-1]])
-meas = np.array([X,Y,Z,I])
+measurements = np.array([X,Y,Z,I])
+meas_ops = {'X':X, 'Y':Y, 'Z':Z}
 
-meas_X, meas_Y, meas_Z = simulation.simulate(dens,meas,dp)
+meas_dat = simulation.simulate(dens,meas_ops,dp)
 
 ################
 ## ESTIMATION ##
@@ -134,7 +135,7 @@ meas_X, meas_Y, meas_Z = simulation.simulate(dens,meas,dp)
 # the density matrix be normalised
 import estimation
 importlib.reload(estimation)
-dens_est = estimation.estimate_rho(I, X, Y, Z, meas_X, meas_Y, meas_Z, dp)
+dens_est = estimation.estimate_rho(I, X, Y, Z, meas_dat, dp)
 
 os.system('clear')
 
