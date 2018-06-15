@@ -1,0 +1,29 @@
+#############################################################
+# Title: Quantum state tomography simulation
+#
+# Language: Python
+#
+# Description: Simulation of linear quantum state
+#              tomography on randomly generated
+#              1 qubit states. Linear quantum
+#              state tomography involves estimating
+#              the density matrix of the 1 qubit
+#              state by measuring successive
+#              instances of the state in an
+#              informationally complete basis of
+#              operators, and then using the relative
+#              frequencies of the results to determine
+#              the coefficients of the density matrix
+#              expressed in this basis of operators:
+#
+#              E.g. (p = density matrix)
+#
+#              p = tr(pI)I + tr(pX)X + tr(pY)Y + tr(pZ)Z
+#
+#              Since tr(pS) is the expectation value
+#              of S in the state p, repeated measurement
+#              of S followed by averaging will result in
+#              tr(pS).
+#
+#
+#############################################################

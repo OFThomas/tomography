@@ -1,0 +1,65 @@
+#############################################################
+# Title: Quantum state tomography simulation
+#
+# Date created: 6th June 2018
+#
+# Language:    Python 3
+#
+# Overview:    Simulation of linear quantum state
+#              tomography on randomly generated
+#              1 qubit states. Linear quantum
+#              state tomography involves estimating
+#              the density matrix of the 1 qubit
+#              state by measuring successive
+#              instances of the state in an
+#              informationally complete basis of
+#              operators, and then using the relative
+#              frequencies of the results to determine
+#              the coefficients of the density matrix
+#              expressed in this basis of operators:
+#
+#              E.g. (p = density matrix)
+#
+#              p = tr(pI)I + tr(pX)X + tr(pY)Y + tr(pZ)Z
+#
+#              Since tr(pS) is the expectation value
+#              of S in the state p, repeated measurement
+#              of S followed by averaging will result in
+#              tr(pS). Applying the proceedure to S = X,
+#              Y, and Z will yield three of the four
+#              coefficients. The fourth is obtained by
+#              the condition that tr(p) = 1.
+#
+# Details:     The script performs the following steps:
+#
+#              1) Generate random one qubit density
+#                 matrices as follows: pick x in [0,1];
+#                 pick a random unitary U; and compute
+#
+#
+#                          -       -
+#                         | x     0 |
+#                 p = U * |         | * U^+
+#                         | 0   1-x |
+#                          -       -
+#
+#                 x should be picked in such a way
+#                 that the resulting distribution for
+#                 p should be suitably uniform (caveat!)
+#                 Alternatively, it should be possible
+#                 for the user to put in a specific
+#                 density matrix.
+#
+#              2) Fix a set of measurement operators,
+#                 and generate sample data from the
+#                 distribution of outcomes implied by
+#                 the state p.
+#
+#              3) Choose an estimator for p, and
+#                 compute the estimated state p~
+#                 using the data generated in step
+#                 2. Then compare p~ with p.
+#
+# Usage: to be imported
+#
+#############################################################
