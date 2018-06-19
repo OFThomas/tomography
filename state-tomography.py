@@ -67,6 +67,9 @@
 #                 Hilbert-Schmidt norm, operator norm,
 #                 etc.)
 #
+# Notes:       1) Throughout, the Hermitian conjugate
+#                 of a matrix A is is denoted A^
+#
 # Usage: python3 state-tomography.py
 #
 #############################################################
@@ -144,3 +147,21 @@ dens_est = estimation.estimate_rho(I, X, Y, Z, meas_dat, dp)
 
 print("The estimate for p is:\n\n",dens_est,"\n")
 print("The original density matrix was:\n\n", dens,"\n")
+
+# Step 4: Compute the distance between p and p~
+#
+# Compute the distance between dens and
+# dens_est. Distance could be computed
+# using the metric that arises from the
+# operator norm, Hilbert-Schmidt norm, etc.
+#
+# The operator norm of A is
+#
+#     |A| = supp |Ax|
+#          |x|=1
+#
+# The Hilbert-Schmidt norm of A is:
+#
+#     |A| = tr(A^ A)
+#
+#
