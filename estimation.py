@@ -15,13 +15,16 @@
 
 import numpy as np
 
-def estimate_rho(I, X, Y, Z, meas_dat, dp):
+def linear_estimate(I, X, Y, Z, meas_dat, options,dp):
     mean_X = np.mean(meas_dat['X'])
-    print("The mean of X is:", np.around(mean_X,dp))
+    if options == 'normal':
+        print("The mean of X is:", np.around(mean_X,dp))
     mean_Y = np.mean(meas_dat['Y'])
-    print("The mean of Y is:", np.around(mean_Y,dp))
+    if options == 'normal':
+        print("The mean of Y is:", np.around(mean_Y,dp))
     mean_Z = np.mean(meas_dat['Z'])
-    print("The mean of Z is:", np.around(mean_Z,dp))
+    if options == 'normal':
+        print("The mean of Z is:", np.around(mean_Z,dp))
     # The estimate for p is given by
     dens_est = (mean_X * X + mean_Y * Y + mean_Z * Z + I)/2
     return dens_est
