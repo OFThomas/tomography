@@ -183,6 +183,7 @@ print("The original density matrix was:\n\n", dens,"\n")
 #
 #     'fro' = Frobenius norm
 #
+from stats import * 
 print("======================= Summary statistics =======================\n")
 print("The number of simulated samples for each measurement was\u001b[36m",meas_dat["X"].size,"\u001b[37m\n")
 variances = {}
@@ -199,13 +200,7 @@ print("\nThe variances in the simulated data are:\n")
 for key in meas_dat :
     variances[key] = np.var(meas_dat[key])
     print("\tThe variance in the",key,"samples was",variances[key])
-distance_op = np.linalg.norm(dens-dens_est,2)
-distance_hs = np.linalg.norm(dens-dens_est,'fro')
-fidelity = np.matrix.trace(sc.linalg.sqrtm(sc.linalg.sqrtm(dens) * dens_est * sc.linalg.sqrtm(dens)))
-distance_fi = np.arccos(fidelity).real
-thing1 = np.sqrt(1-fidelity**2)
-thing2 = 1-fidelity
 print("\nDistances between the original density matrix and the estimate:")
-print("\n\tIn the operator norm:\t\t", distance_op)
-print("\tIn the Hilbert Schmidt norm:\t",distance_hs)
-print("\tFidelity distance:\t\t",distance_fi)
+print("\n\tIn the operator norm:\t\t", distance(dens, dens_est, 'operator'))
+print("\tIn the Hilbert Schmidt norm:\t",distance(dens, dens_est, 'trace'))
+print("\tFidelity distance:\t\t",distance(dens, dens_est, 'fidelity'))
