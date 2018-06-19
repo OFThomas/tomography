@@ -115,7 +115,7 @@ def simulate(dens,meas_ops,dp):
     # Generate the measurement data
     meas_dat = {}
     # User input: select number of measurements
-    samples = get_user_value("Choose the number of measurements in each basis:","integer")
+    samples = get_user_value("\nChoose the number of measurements in each basis","integer")
     for key in meas_ops:
         meas_dat[key] = np.random.choice(eigenvalues[key], samples, p=p[key]);
 
