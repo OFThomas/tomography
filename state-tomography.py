@@ -157,18 +157,33 @@ print("The original density matrix was:\n\n", dens,"\n")
 #
 # The operator norm of A is
 #
-#     |A| = supp |Ax|
-#          |x|=1
+#     ||A|| = supp |Ax|
+#            |x|=1
 #
 # The Hilbert-Schmidt norm of A is:
 #
-#     |A| = tr(A^ A)
+#     ||A|| = sqrt[ tr(A^ A) ]
+#
+# A metric d is always obtained from
+# a norm using
+#
+#     d(A,B) = ||A - B||
 #
 distance_op = np.linalg.norm(dens-dens_est)
 distance_hs = abs(np.matrix.trace(np.matrix.getH(dens-dens_est) * (dens-dens_est))[0,0])
 print("======================= Summary statistics =======================\n")
-print("The number of simulated samples for each measurement was",meas_dat["X"].size,"\n")
+print("The number of simulated samples for each measurement was\u001b[32m",meas_dat["X"].size,"\u001b[37m\n")
 variances = {}
+# Get the purity of the density matrix estimate
+eigenvalues, eigenvectors = np.linalg.eig(dens_est)
+# Assume eigenvalues are real
+print("The eigenvalues of the estimates density matrix are:\n\n\t",
+      np.around(eigenvalues.real[0],dp), "and",
+      np.around(eigenvalues.real[1],dp))
+print("\nThe purity parameter of the estimated density matrix is",
+      np.maximum(np.around(eigenvalues.real[0],dp),
+      np.around(eigenvalues.real[1],dp)))
+print("\nThe variances in the simulated data are:\n")
 for key in meas_dat :
     variances[key] = np.var(meas_dat[key])
     print("\tThe variance in the",key,"samples was",variances[key])
