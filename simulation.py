@@ -25,64 +25,44 @@ from input import *
 #   enter the matrix manually, or it generates
 #   the matrix at random. 
 #
-def density(dp):
-    print("===== Density matrix generation =====\n")
-    print("A density matrix is required to test")
-    print("the state tomography proceedure. It")
-    print("can be input manually or generated")
-    print("randomly.")
-    response = yes_or_no("Do you want to enter a density matrix manually? ")
-    if response == 0:
-        # Request matrix dimension
-        while 1==1:
-            dim = get_user_value("Specify the matrix dimension", "integer")
-            if dim >= 2: 
-                if bin(dim).count("1") == 1: break
-                else: print("Matrix dimension should be power of 2")  
-            else: print("Matrix dimension must be at least 2")
-        # Populate matrix
-        dens = np.asmatrix(np.zeros((dim,dim), dtype=complex))
-        while 1==1:
-            for m in np.ndindex((dim,dim)):
-                dens[m] = get_user_value("Input element " + str(m), "complex")
-            # Print and check the density matrix
-            response = yes_or_no("Is this the correct density matrix?\n\n"+str(dens)+"\n\n")
-            if response == 0: break
-            else: print("Enter the density matrix again.")
-    else: 
-        # Generate a random matrix
-        print("\nThe random density matrix will be generated")
-        print("by generating random eignevalues x and 1-x")
-        print("and then conjugating the resulting diagonal")
-        print("matrix by a random unitary matrix U\n")
-        x = np.random.uniform(0,1) # Generate x
-        while 1==1:
-            print("Picked random eigenvalues:\n\n\t ",x,",",1-x)
-            realMat = np.random.random((2,2))
-            U = np.asmatrix(ug.rvs(2)) # Random unitary 
-            print("\nThe random matrix U is: \n")
-            print(U,"\n")
-            # Check that U is actually unitary
-            U_dag = np.matrix.getH(U)
-            if(U_dag * U - np.asmatrix([[1,0],[0,1]]) > 1e-5).any(): 
-                print("Bug: failed to generate unitary matrix")
-                print("Exiting")
-                exit(1)
-            #print("Check that U * U^+ = I: \n")
-            #print(np.around(test,dp),"\n")
-            # Compute the density matrix
-            diag = np.matrix([[x,0],[0,1-x]])
-            dens = U * diag * U_dag
-            print("The density matrix is:\n\n", dens,"\n")
-            # Check the density matrix
-            print("The trace of the density matrix is", np.around(np.trace(dens),dp), "which should be 1.")
-            print("The eigenvalues", np.around(np.linalg.eig(dens)[0],dp), "should both be positive.")
-            response = yes_or_no("Does everything look OK? ")
-            if response == 0: break
-            elif yes_or_no("Try to generate density matrix again? ") == 0:
-                print("Attempting to generate density matrix...")
-            else: exit()
-        return dens
+#   The function takes a purity parameter x
+#   which is between 0 and 1.
+#
+#   The options parameter specifies the type of
+#   user interaction. 'full' means that the
+#   function is interactive. 'none' means that
+#   the function silently generates a random
+#   density matrix.
+#
+def density(x,dp,options):
+    if options == 'full':
+        print("===== Density matrix generation =====\n")
+        print("A density matrix is required to test")
+        print("the state tomography proceedure. It")
+        print("can be input manually or generated")
+        print("randomly.")
+        response = yes_or_no("Do you want to enter a density matrix manually? ")
+        if response == 0:
+            # Request matrix dimension
+            while 1==1:
+                dim = get_user_value("Specify the matrix dimension", "integer")
+                if dim >= 2: 
+                    if bin(dim).count("1") == 1: break
+                    else: print("Matrix dimension should be power of 2")  
+                else: print("Matrix dimension must be at least 2")
+            # Populate matrix
+            dens = np.asmatrix(np.zeros((dim,dim), dtype=complex))
+            while 1==1:
+                for m in np.ndindex((dim,dim)):
+                    dens[m] = get_user_value("Input element " + str(m), "complex")
+                # Print and check the density matrix
+                response = yes_or_no("Is this the correct density matrix?\n\n"+str(dens)+"\n\n")
+                if response == 0: return dens
+                else: print("Enter the density matrix again.")
+        else: 
+            # Generate a random matrix
+            dens = random_density(x,'normal',dp)
+            return dens
 
 def simulate(dens,meas_ops,dp):
     print("\n===== Generate measurement data =====\n")
@@ -120,3 +100,60 @@ def simulate(dens,meas_ops,dp):
         meas_dat[key] = np.random.choice(eigenvalues[key], samples, p=p[key]);
 
     return meas_dat
+
+
+# Function: random_density(dp)
+#   Generate a density matrix
+#
+#   The function takes a purity parameter x
+#   which is between 0 and 1, which is one
+#   of the eigenvalues of the density matrix
+#   the other is 1-x.
+#
+#   options: 'normal' = print
+#            'silent' = don't print
+#
+#   dp = printing decimal places
+
+def random_density(x, options, dp):
+    # Generate a random matrix
+    assert options == 'normal' or options == 'none'
+    if options == 'normal':
+        print("\nThe random density matrix will be generated")
+        print("by generating random eignevalues x and 1-x")
+        print("and then conjugating the resulting diagonal")
+        print("matrix by a random unitary matrix U\n")
+    # Check that the purity parameter satisfies the correct
+    # bounds
+    assert 0 <= x <= 1
+    while 1==1:
+        print("Picked eigenvalues:\n\n\t ",x,",",1-x)
+        realMat = np.random.random((2,2))
+        U = np.asmatrix(ug.rvs(2)) # Random unitary
+        if options == 'normal':
+            print("\nThe random matrix U is: \n")
+            print(U,"\n")
+        # Check that U is actually unitary
+        U_dag = np.matrix.getH(U)
+        if(U_dag * U - np.asmatrix([[1,0],[0,1]]) > 1e-5).any(): 
+            print("Bug: failed to generate unitary matrix")
+            print("Exiting")
+            exit(1)
+        #print("Check that U * U^+ = I: \n")
+        #print(np.around(test,dp),"\n")
+        # Compute the density matrix
+        diag = np.matrix([[x,0],[0,1-x]])
+        dens = U * diag * U_dag
+        if options == 'normal':
+            print("The density matrix is:\n\n", dens,"\n")
+        # Manaully check the density matrix
+        if options == 'normal':
+            print("The trace of the density matrix is", np.around(np.trace(dens),dp), "which should be 1.")
+            print("The eigenvalues", np.around(np.linalg.eig(dens)[0],dp), "should both be positive.")
+            response = yes_or_no("Does everything look OK? ")
+            if response == 0: break
+            elif yes_or_no("Try to generate density matrix again? ") == 0:
+                print("Attempting to generate density matrix...")
+            else: exit()
+        else: break
+    return dens
