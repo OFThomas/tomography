@@ -35,11 +35,11 @@ def yes_or_no(string):
 #   Argument 2: The type of the requested value
 def get_user_value(string, type):
     while 1==1:
-        response = input(string + " " + "[" + type + "]:")
+        response = input(string + " " + "[" + type + "]: ")
         try:
             if type == "integer" : user_val = int(response)
             elif type == "float" : user_val = float(response)
             elif type == "complex" : user_val = complex(response)
             return user_val
         except ValueError:
-            print(response,"is not of type","[" + type + "]:","; try again...")
+            print(response,"is not of type","[" + type + "];","try again...")
