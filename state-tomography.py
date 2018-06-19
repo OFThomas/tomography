@@ -61,6 +61,12 @@
 #                 using the data generated in step
 #                 2. Then compare p~ with p.
 #
+#              4) Compare the generated density matrix
+#                 with the original density matrix
+#                 using some measure of distance (e.g.
+#                 Hilbert-Schmidt norm, operator norm,
+#                 etc.)
+#
 # Usage: python3 state-tomography.py
 #
 #############################################################
