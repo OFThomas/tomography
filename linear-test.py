@@ -33,21 +33,22 @@
 #                 the state p.
 #
 #              3) Compute the density matrix using the
-#                 linear estimator. Then compute the
-#                 distance between the estimate and the
-#                 true density matrix for each of the
-#                 different distances (operator norm,
-#                 Hilbert-Schmidt norm, fidelity).
+#                 linear estimator.
 #
-#              4) Perform averages of each distance at each
+#              4) Compute the distance between the
+#                 estimate and the true density matrix
+#                 for each of the different distances
+#                 (operator norm, Hilbert-Schmidt norm,
+#                 fidelity).
+#
+#              5) Perform averages of each distance at each
 #                 value of x. Plot the average distances
 #                 as a function of x for all the values of
 #                 x.
 #
-#              5) Repeat steps 1-4 for different values
+#              6) Repeat steps 1-4 for different values
 #                 of x and repeat each value of x a large
 #                 number of times. Store all the distances.
-#
 #
 # Usage: python3 linear-test.py
 #
@@ -97,6 +98,7 @@ meas_dat = simulation.simulate(dens,meas_ops,
 #
 # Then tr(pI) is computed by requiring that
 # the density matrix be normalised
+#
 import estimation
 importlib.reload(estimation)
 dens_est = estimation.linear_estimate(I, X, Y, Z, meas_dat,'none', dp)
@@ -104,12 +106,25 @@ dens_est = estimation.linear_estimate(I, X, Y, Z, meas_dat,'none', dp)
 print("The estimate for p is:\n\n",dens_est,"\n")
 print("The original density matrix was:\n\n", dens,"\n")
 
-# Step 4: Compute and average the distances
+# Step 4: Compute and the distances
 #
 # Compute distances between the estimated
 # and true density matrix using the
 # different distance fuctions.
 #
 
+# Step 5: 
+#
+# Compute distances between the estimated
+# and true density matrix using the
+# different distance fuctions. Average the 
+#
+
 #---------------------------------------------------------------------------------- END LOOP HERE
 
+# Step 6: Average the 
+#
+# Compute distances between the estimated
+# and true density matrix using the
+# different distance fuctions.
+#
