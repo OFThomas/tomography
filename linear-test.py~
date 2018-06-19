@@ -1,0 +1,52 @@
+#!/usr/local/bin/python3
+#############################################################
+# Title: Comparison between different state distances
+#
+# Date created: 19th June 2018
+#
+# Language:    Python 3
+#
+# Overview:    The point of this program is to compare the 
+#
+# Details:     The script performs the following steps:
+#
+#              1) Generate random one qubit density
+#                 matrices as follows: pick x in [0,1];
+#                 pick a random unitary U; and compute
+#
+#
+#                          -       -
+#                         | x     0 |
+#                 p = U * |         | * U^
+#                         | 0   1-x |
+#                          -       -
+#
+#                 x should be picked in such a way
+#                 that the resulting distribution for
+#                 p should be suitably uniform (caveat!)
+#                 Alternatively, it should be possible
+#                 for the user to put in a specific
+#                 density matrix.
+#
+#              2) Fix a set of measurement operators,
+#                 and generate sample data from the
+#                 distribution of outcomes implied by
+#                 the state p.
+#
+#              3) Choose an estimator for p, and
+#                 compute the estimated state p~
+#                 using the data generated in step
+#                 2. Then compare p~ with p.
+#
+#              4) Compare the generated density matrix
+#                 with the original density matrix
+#                 using some measure of distance (e.g.
+#                 Hilbert-Schmidt norm, operator norm,
+#                 etc.)
+#
+# Notes:       1) Throughout, the Hermitian conjugate
+#                 of a matrix A is is denoted A^
+#
+# Usage: python3 state-tomography.py
+#
+#############################################################
