@@ -78,6 +78,7 @@
 import importlib
 import numpy as np
 from scipy.stats import unitary_group as ug
+import scipy as sc
 
 ################
 ## SIMULATION ##
@@ -153,7 +154,8 @@ print("The original density matrix was:\n\n", dens,"\n")
 # Compute the distance between dens and
 # dens_est. Distance could be computed
 # using the metric that arises from the
-# operator norm, Hilbert-Schmidt norm, etc.
+# operator norm, Hilbert-Schmidt norm
+# also called the Frobenius norm), etc.
 #
 # The operator norm of A is
 #
@@ -169,10 +171,20 @@ print("The original density matrix was:\n\n", dens,"\n")
 #
 #     d(A,B) = ||A - B||
 #
-distance_op = np.linalg.norm(dens-dens_est)
-distance_hs = abs(np.matrix.trace(np.matrix.getH(dens-dens_est) * (dens-dens_est))[0,0])
+# The fidelity distance is defined as
+# follows
+#
+#     F(A,B) = tr[ sqrt(sqrt(A) B sqrt(A)) ]
+#     d(A.B) = arccos[F(A,B)]
+#
+# The np.norm function implements
+# several norms depending on the
+# value of the second parameter:
+#
+#     'fro' = Frobenius norm
+#
 print("======================= Summary statistics =======================\n")
-print("The number of simulated samples for each measurement was\u001b[32m",meas_dat["X"].size,"\u001b[37m\n")
+print("The number of simulated samples for each measurement was\u001b[36m",meas_dat["X"].size,"\u001b[37m\n")
 variances = {}
 # Get the purity of the density matrix estimate
 eigenvalues, eigenvectors = np.linalg.eig(dens_est)
@@ -187,8 +199,13 @@ print("\nThe variances in the simulated data are:\n")
 for key in meas_dat :
     variances[key] = np.var(meas_dat[key])
     print("\tThe variance in the",key,"samples was",variances[key])
-
+distance_op = np.linalg.norm(dens-dens_est,2)
+distance_hs = np.linalg.norm(dens-dens_est,'fro')
+fidelity = np.matrix.trace(sc.linalg.sqrtm(sc.linalg.sqrtm(dens) * dens_est * sc.linalg.sqrtm(dens)))
+distance_fi = np.arccos(fidelity).real
+thing1 = np.sqrt(1-fidelity**2)
+thing2 = 1-fidelity
 print("\nDistances between the original density matrix and the estimate:")
 print("\n\tIn the operator norm:\t\t", distance_op)
 print("\tIn the Hilbert Schmidt norm:\t",distance_hs)
-
+print("\tFidelity distance:\t\t",distance_fi)
