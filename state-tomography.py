@@ -99,7 +99,8 @@ import scipy as sc
 dp = 5
 import simulation
 importlib.reload(simulation)
-dens = simulation.density(dp)
+x = np.random.uniform(0,1) # Generate x
+dens = simulation.density(x,dp,'full')
     
 # Step 2: Generate measurement data
 #
