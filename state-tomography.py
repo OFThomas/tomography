@@ -129,7 +129,7 @@ Z = np.matrix([[1,0],[0,-1]])
 measurements = np.array([X,Y,Z,I])
 meas_ops = {'X':X, 'Y':Y, 'Z':Z}
 
-meas_dat = simulation.simulate(dens,meas_ops,dp)
+meas_dat = simulation.simulate(dens,meas_ops,0,'normal',dp)
 
 ################
 ## ESTIMATION ##
@@ -145,7 +145,7 @@ meas_dat = simulation.simulate(dens,meas_ops,dp)
 # the density matrix be normalised
 import estimation
 importlib.reload(estimation)
-dens_est = estimation.estimate_rho(I, X, Y, Z, meas_dat, dp)
+dens_est = estimation.linear_estimate(I, X, Y, Z, meas_dat, dp)
 
 print("The estimate for p is:\n\n",dens_est,"\n")
 print("The original density matrix was:\n\n", dens,"\n")
