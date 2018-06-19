@@ -164,4 +164,16 @@ print("The original density matrix was:\n\n", dens,"\n")
 #
 #     |A| = tr(A^ A)
 #
-#
+distance_op = np.linalg.norm(dens-dens_est)
+distance_hs = abs(np.matrix.trace(np.matrix.getH(dens-dens_est) * (dens-dens_est))[0,0])
+print("======================= Summary statistics =======================\n")
+print("The number of simulated samples for each measurement was",meas_dat["X"].size,"\n")
+variances = {}
+for key in meas_dat :
+    variances[key] = np.var(meas_dat[key])
+    print("\tThe variance in the",key,"samples was",variances[key])
+
+print("\nDistances between the original density matrix and the estimate:")
+print("\n\tIn the operator norm:\t\t", distance_op)
+print("\tIn the Hilbert Schmidt norm:\t",distance_hs)
+
