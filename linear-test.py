@@ -39,14 +39,15 @@
 #                 different distances (operator norm,
 #                 Hilbert-Schmidt norm, fidelity).
 #
-#              4) Repeat steps 1-3 for different values
-#                 of x and repeat each value of x a large
-#                 number of times. Store all the distances.
-#
-#              5) Perform averages of each distance at each
+#              4) Perform averages of each distance at each
 #                 value of x. Plot the average distances
 #                 as a function of x for all the values of
 #                 x.
+#
+#              5) Repeat steps 1-4 for different values
+#                 of x and repeat each value of x a large
+#                 number of times. Store all the distances.
+#
 #
 # Usage: python3 linear-test.py
 #
@@ -58,9 +59,7 @@ import numpy as np
 from scipy.stats import unitary_group as ug
 import scipy as sc
 
-################
-## SIMULATION ##
-################
+# Define x -- put a loop here ----------------------------------------- LOOP
 
 # Step 1: Prepare the density matrix
 #
@@ -78,4 +77,39 @@ import simulation
 importlib.reload(simulation)
 dens = simulation.random_density(x,'none',dp)
 
+# Step 2: Generate measurement data
+#
+# Generate data for X, Y and Z measurements
+#
+I = np.matrix([[1,0],[0,1]])
+X = np.matrix([[0,1],[1,0]])
+Y = np.matrix([[0,-1j],[1j,0]])
+Z = np.matrix([[1,0],[0,-1]])
+measurements = np.array([X,Y,Z,I])
+meas_ops = {'X':X, 'Y':Y, 'Z':Z}
+samples = 100
+meas_dat = simulation.simulate(dens,meas_ops,
+                               samples,'none',dp)
+
+# Step 3: Estimate density matrix
+#
+# Compute linear estimator
+#
+# Then tr(pI) is computed by requiring that
+# the density matrix be normalised
+import estimation
+importlib.reload(estimation)
+dens_est = estimation.linear_estimate(I, X, Y, Z, meas_dat,'none', dp)
+
+print("The estimate for p is:\n\n",dens_est,"\n")
+print("The original density matrix was:\n\n", dens,"\n")
+
+# Step 4: Compute and average the distances
+#
+# Compute distances between the estimated
+# and true density matrix using the
+# different distance fuctions.
+#
+
+#---------------------------------------------------------------------------------- END LOOP HERE
 
