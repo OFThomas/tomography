@@ -64,17 +64,18 @@ def density(x,dp,options):
             dens = random_density(x,'normal',dp)
             return dens
 
-def simulate(dens,meas_ops,dp):
-    print("\n===== Generate measurement data =====\n")
-    print("The X measurements are simulated by")
-    print("computing the projectors P = |+><+| and ")
-    print("P = |-><-| for each measurement outcome")
-    print("and then computing the probability using")
-    print("prob = tr(pP), where p is the density")
-    print("matrix. Then samples are taken from")
-    print("a discrete distribution defined by the")
-    print("measurement probabilities. The process")
-    print("is repeated for Y and Z.\n")
+def simulate(dens,meas_ops,samples,options,dp):
+    if options == 'normal':
+        print("\n===== Generate measurement data =====\n")
+        print("The X measurements are simulated by")
+        print("computing the projectors P = |+><+| and ")
+        print("P = |-><-| for each measurement outcome")
+        print("and then computing the probability using")
+        print("prob = tr(pP), where p is the density")
+        print("matrix. Then samples are taken from")
+        print("a discrete distribution defined by the")
+        print("measurement probabilities. The process")
+        print("is repeated for Y and Z.\n")
     eigenvalues = {} #np.zeros(3,dtype=complex).tolist()
     eigenvectors = {} #np.zeros(3,dtype=complex).tolist()
     # Compute the eigenvectors and eigenvalues of X, Y and Z
@@ -88,17 +89,18 @@ def simulate(dens,meas_ops,dp):
         proj[key] = ([eigenvectors[key][:,0] * np.matrix.getH(eigenvectors[key][:,0]),
                       eigenvectors[key][:,1] * np.matrix.getH(eigenvectors[key][:,1])])
         p[key] = ([np.trace(dens * proj[key][0]).real, np.trace(dens * proj[key][1]).real])
-    print("Finished calculating the projectors.\n")
+    if options == 'normal': print("Finished calculating the projectors.\n")
     for key in meas_ops:
-        print("The probabilities associated with",key,"are:", np.around(p[key],dp))
+        if options == 'normal':
+            print("The probabilities associated with",key,"are:", np.around(p[key],dp))
         
     # Generate the measurement data
     meas_dat = {}
-    # User input: select number of measurements
-    samples = get_user_value("\nChoose the number of measurements in each basis","integer")
+    if options == 'normal':
+        # User overwrite argument: select number of measurements
+        samples = get_user_value("\nChoose the number of measurements in each basis","integer") 
     for key in meas_ops:
         meas_dat[key] = np.random.choice(eigenvalues[key], samples, p=p[key]);
-
     return meas_dat
 
 
