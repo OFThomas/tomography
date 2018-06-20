@@ -162,9 +162,10 @@ for meas in sim_dat['probabilities']: # Measurement operator
 #
 # Then tr(pI) is computed by requiring that
 # the density matrix be normalised
+#
 import estimation
 importlib.reload(estimation)
-dens_est = estimation.linear_estimate(I, X, Y, Z, meas_dat, dp)
+dens_est = estimation.linear_estimate_XYZ(meas_dat)
 
 print("The estimate for p is:\n\n",dens_est,"\n")
 print("The original density matrix was:\n\n", dens,"\n")
