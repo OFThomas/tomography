@@ -143,6 +143,5 @@ def simulate(dens,meas_ops,samples):
             # Generate the measurement data
             p.append(sim_dat['probabilities'][measurement][outcome])
             v.append(complex(outcome))
-            print("Here")
         sim_dat['data'][measurement] = np.random.choice(v,samples,p=p)
     return sim_dat
