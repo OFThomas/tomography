@@ -115,6 +115,15 @@ def density(x,dp):
 #   have distinct eigenvalues (no algebraic
 #   multiplicities).
 #
+#   The function returns a dictionary with
+#   two main branches: 'data' and
+#   'probabilities'. The first contains a
+#   dictionary of simulated data indexed
+#   by measurement. The second contains a
+#   dictionary of probabilities indexed
+#   first by measurement and then by
+#   measurement outcome.
+#
 def simulate(dens,meas_ops,samples):
     values, vectors, eigen, proj, sim_dat = {},{},{},{},{}
     sim_dat['probabilities'], sim_dat['data'] = {},{}
