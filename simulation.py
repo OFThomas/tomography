@@ -146,12 +146,3 @@ def simulate(dens,meas_ops,samples):
             print("Here")
         sim_dat['data'][measurement] = np.random.choice(v,samples,p=p)
     return sim_dat
-
-
-
-
-
- 
-
-
- 
