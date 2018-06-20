@@ -34,8 +34,8 @@ def linear_estimate_XYZ(meas_dat):
     X = np.matrix([[0,1],[1,0]])
     Y = np.matrix([[0,-1j],[1j,0]])
     Z = np.matrix([[1,0],[0,-1]])
-    mean_X = np.mean(meas_dat['X'])
-    mean_Y = np.mean(meas_dat['Y'])
-    mean_Z = np.mean(meas_dat['Z'])
+    mean_X = np.mean(meas_dat['data']['X'])
+    mean_Y = np.mean(meas_dat['data']['Y'])
+    mean_Z = np.mean(meas_dat['data']['Z'])
     dens_est = (mean_X * X + mean_Y * Y + mean_Z * Z + I)/2
     return dens_est

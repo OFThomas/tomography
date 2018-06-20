@@ -165,7 +165,7 @@ for meas in sim_dat['probabilities']: # Measurement operator
 #
 import estimation
 importlib.reload(estimation)
-dens_est = estimation.linear_estimate_XYZ(meas_dat)
+dens_est = estimation.linear_estimate_XYZ(sim_dat)
 
 print("The estimate for p is:\n\n",dens_est,"\n")
 print("The original density matrix was:\n\n", dens,"\n")
@@ -206,7 +206,7 @@ print("The original density matrix was:\n\n", dens,"\n")
 #
 from stats import * 
 print("======================= Summary statistics =======================\n")
-print("The number of simulated samples for each measurement was\u001b[36m",meas_dat["X"].size,"\u001b[37m\n")
+print("The number of simulated samples for each measurement was\u001b[36m",sim_dat['data']["X"].size,"\u001b[37m\n")
 variances = {}
 # Get the purity of the density matrix estimate
 eigenvalues, eigenvectors = np.linalg.eig(dens_est)
