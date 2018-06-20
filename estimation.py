@@ -15,16 +15,27 @@
 
 import numpy as np
 
-def linear_estimate(I, X, Y, Z, meas_dat, options,dp):
+# Function: linear_estimate_XYZ(meas_dat)
+#
+# The function takes in X, Y and Z
+# measurement data and produces an
+# estimate of the density matrix
+# by computing the means of the X,
+# Y and z data. The estimated density
+# matrix is given by
+#
+# dens_est = 1/2 (mean_X * X +
+#                 mean_Y * Y +
+#                 mean_Z * Z +
+#                 I) 
+# 
+def linear_estimate_XYZ(meas_dat):
+    I = np.matrix([[1,0],[0,1]])
+    X = np.matrix([[0,1],[1,0]])
+    Y = np.matrix([[0,-1j],[1j,0]])
+    Z = np.matrix([[1,0],[0,-1]])
     mean_X = np.mean(meas_dat['X'])
-    if options == 'normal':
-        print("The mean of X is:", np.around(mean_X,dp))
     mean_Y = np.mean(meas_dat['Y'])
-    if options == 'normal':
-        print("The mean of Y is:", np.around(mean_Y,dp))
     mean_Z = np.mean(meas_dat['Z'])
-    if options == 'normal':
-        print("The mean of Z is:", np.around(mean_Z,dp))
-    # The estimate for p is given by
     dens_est = (mean_X * X + mean_Y * Y + mean_Z * Z + I)/2
     return dens_est
