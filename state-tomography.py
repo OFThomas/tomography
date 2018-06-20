@@ -100,7 +100,8 @@ dp = 5
 import simulation
 importlib.reload(simulation)
 x = np.random.uniform(0,1) # Generate x
-dens = simulation.density(x,dp,'full')
+print("Picked eigenvalues:\n\n\t ",x,",",1-x)
+dens = simulation.density(x,dp)
     
 # Step 2: Generate measurement data
 #
@@ -128,8 +129,26 @@ Y = np.matrix([[0,-1j],[1j,0]])
 Z = np.matrix([[1,0],[0,-1]])
 measurements = np.array([X,Y,Z,I])
 meas_ops = {'X':X, 'Y':Y, 'Z':Z}
+print("\n===== Generate measurement data =====\n")
+print("The X measurements are simulated by")
+print("computing the projectors P = |+><+| and ")
+print("P = |-><-| for each measurement outcome")
+print("and then computing the probability using")
+print("prob = tr(pP), where p is the density")
+print("matrix. Then samples are taken from")
+print("a discrete distribution defined by the")
+print("measurement probabilities. The process")
+print("is repeated for Y and Z.\n")
+# User overwrite argument: select number of measurements
+samples = get_user_value("\nChoose the number of measurements in each basis","integer")  
+sim_dat = simulation.simulate(dens,meas_ops,samples)
 
-meas_dat = simulation.simulate(dens,meas_ops,0,'normal',dp)
+for meas in sim_dat['probabilities']: # Measurement operator
+    for outcome in sim_dat['probabilities'][meas]: # Measurement outcome
+        print("The probability of getting",np.around(outcome,dp),
+              "from measurement",meas,"is",
+              np.around(sim_dat['probabilities'][meas][outcome],dp))
+
 
 ################
 ## ESTIMATION ##
