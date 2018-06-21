@@ -149,7 +149,6 @@ for meas in sim_dat['probabilities']: # Measurement operator
               "from measurement",meas,"is",
               np.around(sim_dat['probabilities'][meas][outcome],dp))
 
-
 ################
 ## ESTIMATION ##
 ################
@@ -211,7 +210,7 @@ variances = {}
 # Get the purity of the density matrix estimate
 eigenvalues, eigenvectors = np.linalg.eig(dens_est)
 # Assume eigenvalues are real
-print("The eigenvalues of the estimates density matrix are:\n\n\t",
+print("The eigenvalues of the estimated density matrix are:\n\n\t",
       np.around(eigenvalues.real[0],dp), "and",
       np.around(eigenvalues.real[1],dp))
 print("\nThe purity parameter of the estimated density matrix is",
