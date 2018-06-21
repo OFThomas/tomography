@@ -59,72 +59,90 @@ import importlib
 import numpy as np
 from scipy.stats import unitary_group as ug
 import scipy as sc
-
-# Define x -- put a loop here ----------------------------------------- LOOP
-
-# Step 1: Prepare the density matrix
-#
-# The purity parameter x is picked between 0
-# and 1.
-#
-# Note: any time a numerical check is performed
-# and printed out, I've rounded the result to
-# make it more readable. Set the decimal places
-# to keep using the dp variable.
-#
-dp = 5
-x = 0.6
 import simulation
 importlib.reload(simulation)
-dens = simulation.random_density(x,'none',dp)
-
-# Step 2: Generate measurement data
-#
-# Generate data for X, Y and Z measurements
-#
-I = np.matrix([[1,0],[0,1]])
-X = np.matrix([[0,1],[1,0]])
-Y = np.matrix([[0,-1j],[1j,0]])
-Z = np.matrix([[1,0],[0,-1]])
-measurements = np.array([X,Y,Z,I])
-meas_ops = {'X':X, 'Y':Y, 'Z':Z}
-samples = 100
-meas_dat = simulation.simulate(dens,meas_ops,
-                               samples,'none',dp)
-
-# Step 3: Estimate density matrix
-#
-# Compute linear estimator
-#
-# Then tr(pI) is computed by requiring that
-# the density matrix be normalised
-#
 import estimation
 importlib.reload(estimation)
-dens_est = estimation.linear_estimate(I, X, Y, Z, meas_dat,'none', dp)
+import stats
+importlib.reload(stats)
+import matplotlib.pyplot as plt
 
-print("The estimate for p is:\n\n",dens_est,"\n")
-print("The original density matrix was:\n\n", dens,"\n")
+# Number of purity values (x) to try
+M = 20
+samples = 10
+x_start = 0
+x_end = 1
+x_step = (x_end - x_start)/M
+av_distances = np.zeros([M,3])
 
-# Step 4: Compute and the distances
-#
-# Compute distances between the estimated
-# and true density matrix using the
-# different distance fuctions.
-#
+# Define x -- put a loop here ----------------------------------------- LOOP for x between 0 and 1
+for k in range(0,M):
+    N = 100
+    dist_op = np.zeros([N,1])
+    dist_trace = np.zeros([N,1])
+    dist_fid = np.zeros([N,1])
+    
+    # Loop 100 times for each value of x ------------------ inner loop -- N trials for each x
+    for n in range(0,N):
+        # Step 1: Prepare the density matrix
+        #
+        # The purity parameter x is picked between 0
+        # and 1.
+        #
+        # Note: any time a numerical check is performed
+        # and printed out, I've rounded the result to
+        # make it more readable. Set the decimal places
+        # to keep using the dp variable.
+        #
+        dp = 5
+        x = 0.6
+        dens = simulation.random_density(x)
+        
+        # Step 2: Generate measurement data
+        #
+        # Generate data for X, Y and Z measurements
+        #
+        I = np.matrix([[1,0],[0,1]])
+        X = np.matrix([[0,1],[1,0]])
+        Y = np.matrix([[0,-1j],[1j,0]])
+        Z = np.matrix([[1,0],[0,-1]])
+        measurements = np.array([X,Y,Z,I])
+        meas_ops = {'X':X, 'Y':Y, 'Z':Z}
+        sim_dat = simulation.simulate(dens,meas_ops,samples)
+        
+        # Step 3: Estimate density matrix
+        #
+        # Compute linear estimator
+        #
+        # Then tr(pI) is computed by requiring that
+        # the density matrix be normalised
+        #
+        import estimation
+        importlib.reload(estimation)
+        dens_est = estimation.linear_estimate_XYZ(sim_dat)
+        
+        #print("The estimate for p is:\n\n",dens_est,"\n")
+        #print("The original density matrix was:\n\n", dens,"\n")
+        
+        # Step 4: Compute and the distances
+        #
+        # Compute distances between the estimated
+        # and true density matrix using the
+        # different distance fuctions.
+        #
+        dist_op[n] = stats.distance(dens, dens_est, 'operator')
+        dist_trace[n] = stats.distance(dens, dens_est, 'trace')
+        dist_fid[n] = stats.distance(dens, dens_est, 'fidelity')
+    
+    # Step 5: Average the distances 
+    #
+    # Average the distances for each value of x
+    #
+    print(dist_op)
+    av_distances[k,:] = [np.mean(dist_op), np.mean(dist_trace), np.mean(dist_fid)]
 
-# Step 5: 
+# Step 6: Process the data 
 #
-# Compute distances between the estimated
-# and true density matrix using the
-# different distance fuctions. Average the 
-#
-
-#---------------------------------------------------------------------------------- END LOOP HERE
-
-# Step 6: Average the 
-#
-# Compute distances between the estimated
-# and true density matrix using the
-# different distance fuctions.
-#
+# Store in a file, plot, etc.
+plt.scatter(,av_distances)
+plt.show()
