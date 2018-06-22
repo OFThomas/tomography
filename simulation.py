@@ -50,7 +50,7 @@ def random_density(x):
         print("Bug: failed to generate a density matrix with trace 1")
         print("Exiting")
         exit(1)
-    if np.linalg.eig(dens)[0][0] < 0 or np.linalg.eig(dens)[0][1] < 0:
+    if np.linalg.eig(dens)[0][0] < -1e-5 or np.linalg.eig(dens)[0][1] < -1e-5:
         print("Bug: failed to generate a positve density matrix")
         print("Exiting")
         exit(1)
