@@ -69,20 +69,31 @@ import matplotlib.pyplot as plt
 
 # Number of purity values (x) to try
 M = 20
-samples = 10
 x_start = 0
-x_end = 1
-x_step = (x_end - x_start)/M
+x_end = 0.1
+#x_step = (x_end - x_start)/M
+x_values = np.linspace(x_start, x_end, M)
 av_distances = np.zeros([M,3])
+non_physical = np.zeros([M,1]) # Count the number of non-physical estimates
 
 # Define x -- put a loop here ----------------------------------------- LOOP for x between 0 and 1
+#
+# This loop runs through different values of the purity parameter x,
+# and tests the ability of the linear estimator in each case
+#
 for k in range(0,M):
     N = 100
+    samples = 100
     dist_op = np.zeros([N,1])
     dist_trace = np.zeros([N,1])
     dist_fid = np.zeros([N,1])
+    non_physical_count = 0 # Temporary counter for non-physical estimates
     
-    # Loop 100 times for each value of x ------------------ inner loop -- N trials for each x
+    # Loop N times for each value of x ------------------ inner loop -- N trials for each x
+    #
+    # This loop generates N random density matrices for each fixed value of x
+    # which used to simulate measurement data and run the estimator
+    #
     for n in range(0,N):
         # Step 1: Prepare the density matrix
         #
@@ -95,7 +106,6 @@ for k in range(0,M):
         # to keep using the dp variable.
         #
         dp = 5
-        x = 0.6
         dens = simulation.random_density(x)
         
         # Step 2: Generate measurement data
@@ -133,16 +143,23 @@ for k in range(0,M):
         dist_op[n] = stats.distance(dens, dens_est, 'operator')
         dist_trace[n] = stats.distance(dens, dens_est, 'trace')
         dist_fid[n] = stats.distance(dens, dens_est, 'fidelity')
-    
+
+        # Count the number of non-physical matrices
+        #
+        eigenvalues, eigenvectors = np.linalg.eig(dens_est)
+        if eigenvalues[0] < 0 or eigenvalues[1] < 0:
+            non_physical_count = non_physical_count + 1 
     # Step 5: Average the distances 
     #
     # Average the distances for each value of x
     #
-    print(dist_op)
+    print(eigenvalues[0])
     av_distances[k,:] = [np.mean(dist_op), np.mean(dist_trace), np.mean(dist_fid)]
-
+    non_physical[k] = non_physical_count
+    
 # Step 6: Process the data 
 #
 # Store in a file, plot, etc.
-plt.scatter(,av_distances)
+plt.plot(x_values,av_distances, '.')
+plt.plot(x_values,non_physical, '.')
 plt.show()
