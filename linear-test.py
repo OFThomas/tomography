@@ -67,12 +67,16 @@ import stats
 importlib.reload(stats)
 import matplotlib.pyplot as plt
 
-# Number of purity values (x) to try
-M = 20
-x_start = 0
-x_end = 0.1
-#x_step = (x_end - x_start)/M
-x_values = np.linspace(x_start, x_end, M)
+
+# ======= Test parameter ===============================
+M = 20 # Number of purity parameters x to try
+x_start = 0 # Specify purity parameter x range
+x_end = 1
+N = 100 # Number of random density matrices per x value
+S = 100 # Number of samples of each measurement to
+        # simulate for each density matrix 
+# ======================================================
+
 av_distances = np.zeros([M,3])
 non_physical = np.zeros([M,1]) # Count the number of non-physical estimates
 
@@ -82,8 +86,6 @@ non_physical = np.zeros([M,1]) # Count the number of non-physical estimates
 # and tests the ability of the linear estimator in each case
 #
 for k in range(0,M):
-    N = 100
-    samples = 100
     dist_op = np.zeros([N,1])
     dist_trace = np.zeros([N,1])
     dist_fid = np.zeros([N,1])
@@ -106,6 +108,7 @@ for k in range(0,M):
         # to keep using the dp variable.
         #
         dp = 5
+        x = x_start + k * (x_end - x_start)/M
         dens = simulation.random_density(x)
         
         # Step 2: Generate measurement data
@@ -118,7 +121,7 @@ for k in range(0,M):
         Z = np.matrix([[1,0],[0,-1]])
         measurements = np.array([X,Y,Z,I])
         meas_ops = {'X':X, 'Y':Y, 'Z':Z}
-        sim_dat = simulation.simulate(dens,meas_ops,samples)
+        sim_dat = simulation.simulate(dens,meas_ops,S)
         
         # Step 3: Estimate density matrix
         #
@@ -160,6 +163,7 @@ for k in range(0,M):
 # Step 6: Process the data 
 #
 # Store in a file, plot, etc.
+x_values = np.linspace(x_start, x_end, M)
 plt.plot(x_values,av_distances, '.')
 plt.plot(x_values,non_physical, '.')
 plt.show()

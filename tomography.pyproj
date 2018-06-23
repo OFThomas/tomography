@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{3d9bd112-7d8f-4ccb-a787-b911e60e8e54}</ProjectGuid>
     <ProjectHome />
-    <StartupFile>state-tomography.py</StartupFile>
+    <StartupFile>linear-test.py</StartupFile>
     <SearchPath />
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -21,8 +21,10 @@
   <ItemGroup>
     <Compile Include="estimation.py" />
     <Compile Include="input.py" />
+    <Compile Include="linear-test.py" />
     <Compile Include="simulation.py" />
     <Compile Include="state-tomography.py" />
+    <Compile Include="stats.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
 </Project>
