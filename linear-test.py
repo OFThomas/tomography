@@ -72,13 +72,13 @@ import matplotlib.pyplot as plt
 M = 20 # Number of purity parameters x to try
 x_start = 0 # Specify purity parameter x range
 x_end = 1
-N = 100 # Number of random density matrices per x value
-S = 100 # Number of samples of each measurement to
+N = 10  # Number of random density matrices per x value
+S = 10  # Number of samples of each measurement to
         # simulate for each density matrix 
 # ======================================================
 
 av_distances = np.zeros([M,3])
-non_physical = np.zeros([M,1]) # Count the number of non-physical estimates
+non_physical = np.zeros([M,1]) # Proportion of non-physical estimates
 
 # Define x -- put a loop here ----------------------------------------- LOOP for x between 0 and 1
 #
@@ -143,9 +143,9 @@ for k in range(0,M):
         # and true density matrix using the
         # different distance fuctions.
         #
-        dist_op[n] = stats.distance(dens, dens_est, 'operator')
-        dist_trace[n] = stats.distance(dens, dens_est, 'trace')
-        dist_fid[n] = stats.distance(dens, dens_est, 'fidelity')
+        dist_op[n] = stats.distance_op(dens, dens_est)
+        dist_trace[n] = stats.distance_trace(dens, dens_est)
+        dist_fid[n] = stats.distance_fid(dens, dens_est)
 
         # Count the number of non-physical matrices
         #
@@ -158,12 +158,21 @@ for k in range(0,M):
     #
     print(eigenvalues[0])
     av_distances[k,:] = [np.mean(dist_op), np.mean(dist_trace), np.mean(dist_fid)]
-    non_physical[k] = non_physical_count
+    non_physical[k] = non_physical_count/N
     
 # Step 6: Process the data 
 #
 # Store in a file, plot, etc.
 x_values = np.linspace(x_start, x_end, M)
-plt.plot(x_values,av_distances, '.')
-plt.plot(x_values,non_physical, '.')
+
+fig, ax1 = plt.subplots()
+ax1.set_xlabel('Purity parameter')
+ax1.set_ylabel('Estimate error distance')
+ax1.plot(x_values, av_distances, '.'color='tab:red')
+
+ax2=ax1.twinx()
+ax2.set_ylabel('Probability of non-physical estimate')
+ax2.plot(x_values,non_physical, '.')
+
+fig.tight_layout()
 plt.show()
