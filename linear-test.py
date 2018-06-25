@@ -66,14 +66,21 @@ importlib.reload(estimation)
 import stats
 importlib.reload(stats)
 import matplotlib.pyplot as plt
+import estimation
+importlib.reload(estimation)
+from matplotlib.offsetbox import AnchoredText
+import cProfile
+import pstats
 
+pr = cProfile.Profile()
+pr.enable()
 
 # ======= Test parameter ===============================
-M = 200 # Number of purity parameters x to try
+M = 20 # Number of purity parameters x to try
 x_start = 0 # Specify purity parameter x range
 x_end = 1
-N = 1000  # Number of random density matrices per x value
-S = 1000  # Number of samples of each measurement to
+N = 50   # Number of random density matrices per x value
+S = 50   # Number of samples of each measurement to
          # simulate for each density matrix 
 # ======================================================
 
@@ -85,6 +92,7 @@ non_physical = np.zeros([M,1]) # Proportion of non-physical estimates
 # This loop runs through different values of the purity parameter x,
 # and tests the ability of the linear estimator in each case
 #
+
 for k in range(0,M):
     dist_op = np.zeros([N,1])
     dist_trace = np.zeros([N,1])
@@ -130,12 +138,7 @@ for k in range(0,M):
         # Then tr(pI) is computed by requiring that
         # the density matrix be normalised
         #
-        import estimation
-        importlib.reload(estimation)
         dens_est = estimation.linear_estimate_XYZ(sim_dat)
-        
-        #print("The estimate for p is:\n\n",dens_est,"\n")
-        #print("The original density matrix was:\n\n", dens,"\n")
         
         # Step 4: Compute and the distances
         #
@@ -159,7 +162,15 @@ for k in range(0,M):
     print(eigenvalues[0])
     av_distances[k,:] = [np.mean(dist_op), np.mean(dist_trace), np.mean(dist_fid)]
     non_physical[k] = non_physical_count/N
-    
+
+pr.disable()
+pr.create_stats()
+
+ps = pstats.Stats(pr)
+total_time = ps.total_tt
+pr.print_stats()
+
+
 # Step 6: Process the data 
 #
 # Store in a file, plot, etc.
@@ -171,10 +182,17 @@ ax1.set_ylabel('Estimate error distance')
 ax1.plot(x_values, av_distances[:,0], '.',color='tab:red')
 ax1.plot(x_values, av_distances[:,1], '.',color='tab:green')
 ax1.plot(x_values, av_distances[:,2], '.',color='tab:blue')
+ax1.legend(['Operator distance','Trace distance','Fidelity'])
 
 ax2=ax1.twinx()
 ax2.set_ylabel('Probability of non-physical estimate')
 ax2.plot(x_values,non_physical, '+', color='tab:brown')
+atext = AnchoredText("Number of purity parameters: " + str(M) + "\n"
+                     +"Density matrices: "+ str(N) + "\n"
+                     +"Samples per measurement: " + str(S) + "\n"
+                     +"Total running time:  " + str(np.around(total_time,3)) + "s",
+                     loc=2)
+ax2.add_artist(atext)
 
 fig.tight_layout()
 plt.show()
