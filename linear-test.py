@@ -73,14 +73,14 @@ import cProfile
 import pstats
 
 pr = cProfile.Profile()
-#pr.enable()
+pr.enable()
 
 # ======= Test parameter ===============================
-M = 20 # Number of purity parameters x to try
+M = 200 # Number of purity parameters x to try
 x_start = 0 # Specify purity parameter x range
 x_end = 1
-N = 50  # Number of random density matrices per x value
-S = 50  # Number of samples of each measurement to
+N = 100  # Number of random density matrices per x value
+S = 10  # Number of samples of each measurement to
          # simulate for each density matrix 
 # ======================================================
 
@@ -101,13 +101,13 @@ proj_X[1,:,:] = vectors_X[:,1] * np.matrix.getH(vectors_X[:,1])
 
 values_Y, vectors_Y = np.linalg.eig(Y)
 proj_Y = np.zeros([2,2,2])
-proj_Y[0] = vectors_Y[:,0] * np.matrix.getH(vectors_Y[:,0])
-proj_Y[1] = vectors_Y[:,1] * np.matrix.getH(vectors_Y[:,1])
+proj_Y[0,:,:] = vectors_Y[:,0] * np.matrix.getH(vectors_Y[:,0])
+proj_Y[1,:,:] = vectors_Y[:,1] * np.matrix.getH(vectors_Y[:,1])
 
 values_Z, vectors_Z = np.linalg.eig(Z)
 proj_Z = np.zeros([2,2,2])
-proj_Z[0] = vectors_Z[:,0] * np.matrix.getH(vectors_Z[:,0])
-proj_Z[1] = vectors_Z[:,1] * np.matrix.getH(vectors_Z[:,1])
+proj_Z[0,:,:] = vectors_Z[:,0] * np.matrix.getH(vectors_Z[:,0])
+proj_Z[1,:,:] = vectors_Z[:,1] * np.matrix.getH(vectors_Z[:,1])
 
 # Define x -- put a loop here ----------------------------------------- LOOP for x between 0 and 1
 #
@@ -148,9 +148,9 @@ for k in range(M):
         #
         # Generate data for X, Y and Z measurements
         #
-        pr.enable()
+        #pr.enable()
         X_data = simulation.simulate(dens,proj_X,values_X,S)
-        pr.disable()
+        #pr.disable()
         Y_data = simulation.simulate(dens,proj_Y,values_Y,S)
         Z_data = simulation.simulate(dens,proj_Z,values_Z,S)
         
@@ -187,7 +187,7 @@ for k in range(M):
     av_distances[k,:] = [np.mean(dist_op), np.mean(dist_trace), np.mean(dist_fid)]
     non_physical[k] = non_physical_count/N
 
-#pr.disable()
+pr.disable()
 pr.create_stats()
 
 ps = pstats.Stats(pr)
