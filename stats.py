@@ -50,30 +50,13 @@ import scipy as sc
 #        F(A,B) = tr[ sqrt(sqrt(A) B sqrt(A)) ]
 #        d(A.B) = arccos[F(A,B)]
 #
-def distance(A,B,type):
-    if type == 'operator':
-        distance = np.linalg.norm(A - B, 2)
-    elif type == 'trace':
-        distance = np.linalg.norm(A - B,'fro')
-    elif type == 'fidelity':
-        fidelity = np.matrix.trace(sc.linalg.sqrtm(sc.linalg.sqrtm(A)
-                    * B * sc.linalg.sqrtm(A)))        
-        distance = np.arccos(fidelity).real
-    return distance
+def distance_op(A,B):
+    return distance = np.linalg.norm(A - B, 2)
 
-'''
-variances = {}
-# Get the purity of the density matrix estimate
-eigenvalues, eigenvectors = np.linalg.eig(dens_est)
-# Assume eigenvalues are real
-print("The eigenvalues of the estimates density matrix are:\n\n\t",
-      np.around(eigenvalues.real[0],dp), "and",
-      np.around(eigenvalues.real[1],dp))
-print("\nThe purity parameter of the estimated density matrix is",
-      np.maximum(np.around(eigenvalues.real[0],dp),
-      np.around(eigenvalues.real[1],dp)))
-print("\nThe variances in the simulated data are:\n")
-for key in meas_dat :
-    variances[key] = np.var(meas_dat[key])
-    print("\tThe variance in the",key,"samples was",variances[key])
-'''
+def distance_trace(A,B):
+    return distance = np.linalg.norm(A - B,'fro')
+
+def distance_fid(A,B):
+    fidelity = np.matrix.trace(sc.linalg.sqrtm(sc.linalg.sqrtm(A)
+                    * B * sc.linalg.sqrtm(A)))        
+    return distance = np.arccos(fidelity).real
