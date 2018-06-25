@@ -29,13 +29,13 @@ import numpy as np
 #                 mean_Z * Z +
 #                 I) 
 # 
-def linear_estimate_XYZ(meas_dat):
+def linear_estimate_XYZ(X_data, Y_data, Z_data):
     I = np.matrix([[1,0],[0,1]])
     X = np.matrix([[0,1],[1,0]])
     Y = np.matrix([[0,-1j],[1j,0]])
     Z = np.matrix([[1,0],[0,-1]])
-    mean_X = np.mean(meas_dat['data']['X'])
-    mean_Y = np.mean(meas_dat['data']['Y'])
-    mean_Z = np.mean(meas_dat['data']['Z'])
+    mean_X = np.mean(X_data)
+    mean_Y = np.mean(Y_data)
+    mean_Z = np.mean(Z_data)
     dens_est = (mean_X * X + mean_Y * Y + mean_Z * Z + I)/2
     return dens_est
