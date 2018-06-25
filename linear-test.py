@@ -87,6 +87,28 @@ S = 50   # Number of samples of each measurement to
 av_distances = np.zeros([M,3])
 non_physical = np.zeros([M,1]) # Proportion of non-physical estimates
 
+# Preliminaries: compute the projectors
+
+I = np.matrix([[1,0],[0,1]])
+X = np.matrix([[0,1],[1,0]])
+Y = np.matrix([[0,-1j],[1j,0]])
+Z = np.matrix([[1,0],[0,-1]])
+
+values_X, vectors_X = np.linalg.eig(X)
+proj_X = np.zeros([2,2,2])
+proj_X[0,:,:] = vectors_X[:,0] * np.matrix.getH(vectors_X[:,0])
+proj_X[1,:,:] = vectors_X[:,1] * np.matrix.getH(vectors_X[:,1])
+
+values_Y, vectors_Y = np.linalg.eig(Y)
+proj_Y = np.zeros([2,2,2])
+proj_Y[0] = vectors_Y[:,0] * np.matrix.getH(vectors_Y[:,0])
+proj_Y[1] = vectors_Y[:,1] * np.matrix.getH(vectors_Y[:,1])
+
+values_Z, vectors_Z = np.linalg.eig(Z)
+proj_Z = np.zeros([2,2,2])
+proj_Z[0] = vectors_Z[:,0] * np.matrix.getH(vectors_Z[:,0])
+proj_Z[1] = vectors_Z[:,1] * np.matrix.getH(vectors_Z[:,1])
+
 # Define x -- put a loop here ----------------------------------------- LOOP for x between 0 and 1
 #
 # This loop runs through different values of the purity parameter x,
@@ -123,13 +145,11 @@ for k in range(0,M):
         #
         # Generate data for X, Y and Z measurements
         #
-        I = np.matrix([[1,0],[0,1]])
-        X = np.matrix([[0,1],[1,0]])
-        Y = np.matrix([[0,-1j],[1j,0]])
-        Z = np.matrix([[1,0],[0,-1]])
-        measurements = np.array([X,Y,Z,I])
-        meas_ops = {'X':X, 'Y':Y, 'Z':Z}
-        sim_dat = simulation.simulate(dens,meas_ops,S)
+        X_data = simulation.simulate(dens,proj_X,values_X,S)
+        Y_data = simulation.simulate(dens,proj_Y,values_Y,S)
+        Z_data = simulation.simulate(dens,proj_Z,values_Z,S)
+
+
         
         # Step 3: Estimate density matrix
         #
@@ -138,7 +158,7 @@ for k in range(0,M):
         # Then tr(pI) is computed by requiring that
         # the density matrix be normalised
         #
-        dens_est = estimation.linear_estimate_XYZ(sim_dat)
+        dens_est = estimation.linear_estimate_XYZ(X_data, Y_data, Z_data)
         
         # Step 4: Compute and the distances
         #
@@ -169,7 +189,6 @@ pr.create_stats()
 ps = pstats.Stats(pr)
 total_time = ps.total_tt
 pr.print_stats()
-
 
 # Step 6: Process the data 
 #
