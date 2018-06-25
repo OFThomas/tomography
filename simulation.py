@@ -101,47 +101,30 @@ def density(x,dp):
         dens = random_density(x)
         return dens
 
-# Function: density(dp)
+# Function: simulate()
 #
-#   Generate a density matrix. The functions
-#   provides the user with the option to 
-#   enter the matrix manually, or it generates
-#   the matrix at random. 
+#   Simulate measurement outcomes for
+#   a set of projectors and associated
+#   measurement outcomes. The proj
+#   variable contains the projectors and
+#   the meas variable contains the
+#   outcomes. Both variables are arrays
+#   ordered so that the ith outcome in
+#   meas corresponds to the ith projector
+#   in proj.
 #
-#   The function takes a purity parameter x
-#   which is between 0 and 1.
+#   The first index of proj indexes the
+#   projectors, and the second two
+#   index the matrix.
 #
-#   This assumes that the measurement operators
-#   have distinct eigenvalues (no algebraic
-#   multiplicities).
+#   The function generates S samples.
 #
-#   The function returns a dictionary with
-#   two main branches: 'data' and
-#   'probabilities'. The first contains a
-#   dictionary of simulated data indexed
-#   by measurement. The second contains a
-#   dictionary of probabilities indexed
-#   first by measurement and then by
-#   measurement outcome.
-#
-def simulate(dens,meas_ops,samples):
-    values, vectors, eigen, proj, sim_dat = {},{},{},{},{}
-    sim_dat['probabilities'], sim_dat['data'] = {},{}
-    # Compute the eigenvectors and eigenvalues of X, Y and Z
-    for measurement in meas_ops:
-        proj[measurement],eigen[measurement] = {},{}
-        sim_dat['probabilities'][measurement] = {}
-        values[measurement], vectors[measurement] = np.linalg.eig(np.asmatrix(meas_ops[measurement]))
-        for k in range(0,values[measurement].size):
-            eigen[measurement][values[measurement][k]] = vectors[measurement][:,k]
-        # Compute the projectors for X, Y and Z:
-        p,v = [],[]
-        for outcome in eigen[measurement]:
-            sim_dat['data'][measurement] = {}
-            proj[measurement][outcome] = eigen[measurement][outcome] * np.matrix.getH(eigen[measurement][outcome])
-            sim_dat['probabilities'][measurement][outcome] = np.trace(dens * proj[measurement][outcome]).real 
-            # Generate the measurement data
-            p.append(sim_dat['probabilities'][measurement][outcome])
-            v.append(complex(outcome))
-        sim_dat['data'][measurement] = np.random.choice(v,samples,p=p)
+def simulate(dens,proj,meas,S):
+    N = meas.size
+    sim_dat = np.zeros(S)
+    p = np.zeros(N)
+    for n in range(0,N):
+        p[n] = np.trace(dens * proj[n,:,:]).real
+    sim_dat = np.random.choice(meas,S,p=p)
     return sim_dat
+
