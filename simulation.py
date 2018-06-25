@@ -110,6 +110,7 @@ def simulate(dens,proj,meas,S):
     sim_dat = np.zeros(S)
     p = np.zeros(N)
     for n in range(0,N):
+        ## Diagonalise it!!!
         p[n] = better_trace(dens * proj[n,:,:],2).real
     sim_dat = np.random.choice(meas,S,p=p)
     return sim_dat

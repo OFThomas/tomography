@@ -73,7 +73,7 @@ import cProfile
 import pstats
 
 pr = cProfile.Profile()
-pr.enable()
+#pr.enable()
 
 # ======= Test parameter ===============================
 M = 20 # Number of purity parameters x to try
@@ -148,7 +148,9 @@ for k in range(M):
         #
         # Generate data for X, Y and Z measurements
         #
+        pr.enable()
         X_data = simulation.simulate(dens,proj_X,values_X,S)
+        pr.disable()
         Y_data = simulation.simulate(dens,proj_Y,values_Y,S)
         Z_data = simulation.simulate(dens,proj_Z,values_Z,S)
         
@@ -185,7 +187,7 @@ for k in range(M):
     av_distances[k,:] = [np.mean(dist_op), np.mean(dist_trace), np.mean(dist_fid)]
     non_physical[k] = non_physical_count/N
 
-pr.disable()
+#pr.disable()
 pr.create_stats()
 
 ps = pstats.Stats(pr)
