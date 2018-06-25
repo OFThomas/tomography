@@ -29,31 +29,11 @@ from input import *
 #   the other is 1-x.
 #
 def random_density(x):
-    # Check that the purity parameter is valid
-    if x > 1 or x < 0:
-        print("Bug: invalid input argument x:",x)
-        print("Exiting")
-        exit(1)
     realMat = np.random.random((2,2))
     U = np.asmatrix(ug.rvs(2)) # Random unitary
-    # Check that U is actually unitary
     U_dag = np.matrix.getH(U)
-    if(U_dag * U - np.asmatrix([[1,0],[0,1]]) > 1e-5).any(): 
-        print("Bug: failed to generate unitary matrix")
-        print("Exiting")
-        exit(1)
-    # Compute the density matrix
     diag = np.matrix([[x,0],[0,1-x]])
     dens = U * diag * U_dag
-    # Check the density matrix
-    if abs(np.trace(dens) - 1) > 1e-10:
-        print("Bug: failed to generate a density matrix with trace 1")
-        print("Exiting")
-        exit(1)
-    if np.linalg.eig(dens)[0][0] < -1e-5 or np.linalg.eig(dens)[0][1] < -1e-5:
-        print("Bug: failed to generate a positve density matrix")
-        print("Exiting")
-        exit(1)
     return dens
 
 
@@ -101,6 +81,12 @@ def density(x,dp):
         dens = random_density(x)
         return dens
 
+def better_trace (A,N):
+    trace = 0
+    for n in range(0,N) : trace += A[n,n]
+    return trace
+
+    
 # Function: simulate()
 #
 #   Simulate measurement outcomes for
@@ -124,7 +110,6 @@ def simulate(dens,proj,meas,S):
     sim_dat = np.zeros(S)
     p = np.zeros(N)
     for n in range(0,N):
-        p[n] = np.trace(dens * proj[n,:,:]).real
+        p[n] = better_trace(dens * proj[n,:,:],2).real
     sim_dat = np.random.choice(meas,S,p=p)
     return sim_dat
-

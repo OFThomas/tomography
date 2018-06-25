@@ -79,8 +79,8 @@ pr.enable()
 M = 20 # Number of purity parameters x to try
 x_start = 0 # Specify purity parameter x range
 x_end = 1
-N = 50   # Number of random density matrices per x value
-S = 50   # Number of samples of each measurement to
+N = 50  # Number of random density matrices per x value
+S = 50  # Number of samples of each measurement to
          # simulate for each density matrix 
 # ======================================================
 
@@ -115,10 +115,14 @@ proj_Z[1] = vectors_Z[:,1] * np.matrix.getH(vectors_Z[:,1])
 # and tests the ability of the linear estimator in each case
 #
 
-for k in range(0,M):
-    dist_op = np.zeros([N,1])
-    dist_trace = np.zeros([N,1])
-    dist_fid = np.zeros([N,1])
+dist_op = np.zeros([N,1])
+dist_trace = np.zeros([N,1])
+dist_fid = np.zeros([N,1])
+
+dp = 5
+
+#for k,n in itertools.product(range(M),range(N)):
+for k in range(M):
     non_physical_count = 0 # Temporary counter for non-physical estimates
     
     # Loop N times for each value of x ------------------ inner loop -- N trials for each x
@@ -126,7 +130,7 @@ for k in range(0,M):
     # This loop generates N random density matrices for each fixed value of x
     # which used to simulate measurement data and run the estimator
     #
-    for n in range(0,N):
+    for n in range(N):
         # Step 1: Prepare the density matrix
         #
         # The purity parameter x is picked between 0
@@ -137,9 +141,8 @@ for k in range(0,M):
         # make it more readable. Set the decimal places
         # to keep using the dp variable.
         #
-        dp = 5
         x = x_start + k * (x_end - x_start)/M
-        dens = simulation.random_density(x)
+        dens = simulation.random_density(x)  
         
         # Step 2: Generate measurement data
         #
@@ -148,8 +151,6 @@ for k in range(0,M):
         X_data = simulation.simulate(dens,proj_X,values_X,S)
         Y_data = simulation.simulate(dens,proj_Y,values_Y,S)
         Z_data = simulation.simulate(dens,proj_Z,values_Z,S)
-
-
         
         # Step 3: Estimate density matrix
         #
@@ -169,12 +170,13 @@ for k in range(0,M):
         dist_op[n] = stats.distance_op(dens, dens_est)
         dist_trace[n] = stats.distance_trace(dens, dens_est)
         dist_fid[n] = stats.distance_fid(dens, dens_est)
-
+        
         # Count the number of non-physical matrices
         #
         eigenvalues, eigenvectors = np.linalg.eig(dens_est)
         if eigenvalues[0] < 0 or eigenvalues[1] < 0:
-            non_physical_count = non_physical_count + 1 
+            non_physical_count = non_physical_count + 1
+        
     # Step 5: Average the distances 
     #
     # Average the distances for each value of x
@@ -188,7 +190,7 @@ pr.create_stats()
 
 ps = pstats.Stats(pr)
 total_time = ps.total_tt
-pr.print_stats()
+pr.print_stats(sort='cumulative')
 
 # Step 6: Process the data 
 #

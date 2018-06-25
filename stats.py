@@ -16,6 +16,11 @@
 import numpy as np
 import scipy as sc
 
+def better_trace (A,N):
+    trace = 0
+    for n in range(0,N) : trace += A[n,n]
+    return trace
+    
 # Distance between density matrices
 #
 # Compute the distance between A and
@@ -59,7 +64,14 @@ def distance_trace(A,B):
     return distance
     
 def distance_fid(A,B):
-    fidelity = np.matrix.trace(sc.linalg.sqrtm(sc.linalg.sqrtm(A)
-                    * B * sc.linalg.sqrtm(A)))        
+    values_A,vectors_A = np.linalg.eig(A)
+    B_new = np.linalg.inv(np.asmatrix(vectors_A)) * B * np.asmatrix(vectors_A)
+    A_new = [[np.sqrt(values_A[0]),0],[0,np.sqrt(values_A[1])]]
+    D = A_new * B_new * A_new
+    values_D = np.linalg.eig(D)[0]
+    fidelity = np.sum(np.sqrt(values_D))
+
+    #C = sc.linalg.sqrtm(A) 
+    #fidelity = np.matrix.trace(sc.linalg.sqrtm(C * B * C))
     distance = np.arccos(fidelity).real
     return distance
