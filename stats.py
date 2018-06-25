@@ -51,12 +51,15 @@ import scipy as sc
 #        d(A.B) = arccos[F(A,B)]
 #
 def distance_op(A,B):
-    return distance = np.linalg.norm(A - B, 2)
+    distance = np.linalg.norm(A - B, 2)
+    return distance
 
 def distance_trace(A,B):
-    return distance = np.linalg.norm(A - B,'fro')
-
+    distance = np.linalg.norm(A - B,'fro')
+    return distance
+    
 def distance_fid(A,B):
     fidelity = np.matrix.trace(sc.linalg.sqrtm(sc.linalg.sqrtm(A)
                     * B * sc.linalg.sqrtm(A)))        
-    return distance = np.arccos(fidelity).real
+    distance = np.arccos(fidelity).real
+    return distance
