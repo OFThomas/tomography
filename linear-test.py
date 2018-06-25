@@ -69,12 +69,12 @@ import matplotlib.pyplot as plt
 
 
 # ======= Test parameter ===============================
-M = 20 # Number of purity parameters x to try
+M = 200 # Number of purity parameters x to try
 x_start = 0 # Specify purity parameter x range
 x_end = 1
-N = 10  # Number of random density matrices per x value
-S = 10  # Number of samples of each measurement to
-        # simulate for each density matrix 
+N = 1000  # Number of random density matrices per x value
+S = 1000  # Number of samples of each measurement to
+         # simulate for each density matrix 
 # ======================================================
 
 av_distances = np.zeros([M,3])
@@ -168,11 +168,13 @@ x_values = np.linspace(x_start, x_end, M)
 fig, ax1 = plt.subplots()
 ax1.set_xlabel('Purity parameter')
 ax1.set_ylabel('Estimate error distance')
-ax1.plot(x_values, av_distances, '.'color='tab:red')
+ax1.plot(x_values, av_distances[:,0], '.',color='tab:red')
+ax1.plot(x_values, av_distances[:,1], '.',color='tab:green')
+ax1.plot(x_values, av_distances[:,2], '.',color='tab:blue')
 
 ax2=ax1.twinx()
 ax2.set_ylabel('Probability of non-physical estimate')
-ax2.plot(x_values,non_physical, '.')
+ax2.plot(x_values,non_physical, '+', color='tab:brown')
 
 fig.tight_layout()
 plt.show()
