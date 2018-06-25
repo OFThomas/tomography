@@ -66,12 +66,14 @@ def distance_trace(A,B):
 def distance_fid(A,B):
     values_A,vectors_A = np.linalg.eig(A)
     B_new = np.linalg.inv(np.asmatrix(vectors_A)) * B * np.asmatrix(vectors_A)
-    A_new = [[np.sqrt(values_A[0]),0],[0,np.sqrt(values_A[1])]]
+    A_new = np.diag(np.sqrt(values_A))
     D = A_new * B_new * A_new
     values_D = np.linalg.eig(D)[0]
     fidelity = np.sum(np.sqrt(values_D))
 
     #C = sc.linalg.sqrtm(A) 
-    #fidelity = np.matrix.trace(sc.linalg.sqrtm(C * B * C))
+    #fidelity1 = np.matrix.trace(sc.linalg.sqrtm(C * B * C))
+    #print(fidelity1-fidelity)
+    #exit(1)
     distance = np.arccos(fidelity).real
     return distance
