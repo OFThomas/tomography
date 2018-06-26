@@ -73,14 +73,14 @@ import cProfile
 import pstats
 
 pr = cProfile.Profile()
-pr.enable()
+#pr.enable()
 
 # ======= Test parameter ===============================
-M = 200 # Number of purity parameters x to try
+M = 20 # Number of purity parameters x to try
 x_start = 0 # Specify purity parameter x range
 x_end = 1
 N = 100  # Number of random density matrices per x value
-S = 10  # Number of samples of each measurement to
+S = 100  # Number of samples of each measurement to
          # simulate for each density matrix 
 # ======================================================
 
@@ -142,8 +142,9 @@ for k in range(M):
         # to keep using the dp variable.
         #
         x = x_start + k * (x_end - x_start)/M
+        pr.enable()
         dens = simulation.random_density(x)  
-        
+        pr.disable()
         # Step 2: Generate measurement data
         #
         # Generate data for X, Y and Z measurements
