@@ -28,8 +28,14 @@ from input import *
 #   of the eigenvalues of the density matrix
 #   the other is 1-x.
 #
+#   It is better to generate a random
+#   complex matrix and do a QR decomposition
+#   than use the random unitary function.
+#
 def random_density(x):
-    U = ug.rvs(2) # Random unitary
+    cmat = np.random.random([2,2]) + 1j * np.random.random([2,2])
+    U = np.linalg.qr(cmat)[0]
+    #U = ug.rvs(2) # Random unitary
     U_dag = np.matrix.getH(np.asmatrix(U))
     diag = [[x,0],[0,1-x]]
     dens = np.matmul(np.matmul(U, diag), U_dag)
@@ -108,8 +114,14 @@ def simulate(dens,proj,meas,S):
     N = meas.size
     sim_dat = np.zeros(S)
     p = np.zeros(N)
-    for n in range(0,N):
+    for n in range(N):
         ## Diagonalise it!!!
-        p[n] = better_trace(dens * proj[n,:,:],2).real
-    sim_dat = np.random.choice(meas,S,p=p)
+        p[n] = better_trace(np.matmul(dens, proj[n,:,:]),2).real
+    #sim_dat = np.random.choice(meas,S,p=p)
+    tmp = np.random.rand(S)
+    # Need to update this for more measurement outcomes!
+    for k in range(S):
+        if tmp[k] < p[0] : sim_dat[k] = meas[0]
+        else : sim_dat[k] = meas[1]
+    
     return sim_dat
