@@ -73,7 +73,7 @@ import cProfile
 import pstats
 
 pr = cProfile.Profile()
-#pr.enable()
+pr.enable()
 
 # ======= Test parameter ===============================
 M = 20 # Number of purity parameters x to try
@@ -143,7 +143,8 @@ for k in range(M):
         #
         x = x_start + k * (x_end - x_start)/M
         #pr.enable()
-        dens = simulation.random_density(x)  
+        dens = simulation.random_density(x)
+        #values_dens,vectors_dens = np.linalg.eig(dens)
         #pr.disable()
         # Step 2: Generate measurement data
         #
@@ -172,9 +173,10 @@ for k in range(M):
         #
         dist_op[n] = stats.distance_op(dens, dens_est)
         dist_trace[n] = stats.distance_trace(dens, dens_est)
-        pr.enable()
+        #pr.enable()
         dist_fid[n] = stats.distance_fid(dens, dens_est)
-        pr.disable()
+        #dist_fid[n] = stats.distance_fid_2(values_dens,vectors_dens,dens_est)
+        #pr.disable()
         # Count the number of non-physical matrices
         #
         eigenvalues = np.linalg.eigvals(dens_est)
@@ -189,7 +191,7 @@ for k in range(M):
     av_distances[k,:] = [np.mean(dist_op), np.mean(dist_trace), np.mean(dist_fid)]
     non_physical[k] = non_physical_count/N
 
-#pr.disable()
+pr.disable()
 pr.create_stats()
 
 ps = pstats.Stats(pr)
