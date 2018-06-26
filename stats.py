@@ -65,10 +65,11 @@ def distance_trace(A,B):
     
 def distance_fid(A,B):
     values_A,vectors_A = np.linalg.eig(A)
-    B_new = np.linalg.inv(np.asmatrix(vectors_A)) * B * np.asmatrix(vectors_A)
+    B_new = np.linalg.inv(np.matmul(np.matmul(vectors_A, B), vectors_A))
     A_new = np.diag(np.sqrt(values_A))
-    D = A_new * B_new * A_new
-    values_D = np.linalg.eig(D)[0]
+    D = np.asmatrix(A_new) * np.asmatrix(B_new) * np.asmatrix(A_new)
+    values_D = np.linalg.eigvals(D)
+    #fidelity = np.sum(np.linalg.eigvals(D))
     fidelity = np.sum(np.sqrt(values_D))
 
     #C = sc.linalg.sqrtm(A) 

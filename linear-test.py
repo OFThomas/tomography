@@ -177,7 +177,7 @@ for k in range(M):
         pr.disable()
         # Count the number of non-physical matrices
         #
-        eigenvalues, eigenvectors = np.linalg.eig(dens_est)
+        eigenvalues = np.linalg.eigvals(dens_est)
         if eigenvalues[0] < 0 or eigenvalues[1] < 0:
             non_physical_count = non_physical_count + 1
         
