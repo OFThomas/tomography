@@ -73,7 +73,7 @@ import cProfile
 import pstats
 
 pr = cProfile.Profile()
-pr.enable()
+#pr.enable()
 
 # ======= Test parameter ===============================
 M = 20 # Number of purity parameters x to try
@@ -151,9 +151,9 @@ for k in range(M):
         #
         #pr.enable()
         X_data = simulation.simulate(dens,proj_X,values_X,S)
-        #pr.disable()
         Y_data = simulation.simulate(dens,proj_Y,values_Y,S)
         Z_data = simulation.simulate(dens,proj_Z,values_Z,S)
+        #pr.disable()
         
         # Step 3: Estimate density matrix
         #
@@ -172,8 +172,9 @@ for k in range(M):
         #
         dist_op[n] = stats.distance_op(dens, dens_est)
         dist_trace[n] = stats.distance_trace(dens, dens_est)
+        pr.enable()
         dist_fid[n] = stats.distance_fid(dens, dens_est)
-        
+        pr.disable()
         # Count the number of non-physical matrices
         #
         eigenvalues, eigenvectors = np.linalg.eig(dens_est)

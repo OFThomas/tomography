@@ -91,6 +91,10 @@ def better_trace (A,N):
     for n in range(0,N) : trace += A[n,n]
     return trace
 
+def better_trace_2 (A):
+    trace = A[0,0] + A[1,1]
+    return trace
+
     
 # Function: simulate()
 #
@@ -116,12 +120,13 @@ def simulate(dens,proj,meas,S):
     p = np.zeros(N)
     for n in range(N):
         ## Diagonalise it!!!
-        p[n] = better_trace(np.matmul(dens, proj[n,:,:]),2).real
+        p[n] = better_trace_2(np.matmul(dens, proj[n,:,:])).real
     #sim_dat = np.random.choice(meas,S,p=p)
     tmp = np.random.rand(S)
     # Need to update this for more measurement outcomes!
-    for k in range(S):
-        if tmp[k] < p[0] : sim_dat[k] = meas[0]
-        else : sim_dat[k] = meas[1]
-    
+    #for k in range(S):
+        #if tmp[k] < p[0] : sim_dat[k] = meas[0]
+        #else : sim_dat[k] = meas[1]
+    sim_dat[tmp <= p[0]] = meas[0]
+    sim_dat[tmp > p[0]] = meas[1]    
     return sim_dat
