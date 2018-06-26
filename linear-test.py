@@ -76,11 +76,11 @@ pr = cProfile.Profile()
 #pr.enable()
 
 # ======= Test parameter ===============================
-M = 20 # Number of purity parameters x to try
+M = 50 # Number of purity parameters x to try
 x_start = 0 # Specify purity parameter x range
 x_end = 1
-N = 100  # Number of random density matrices per x value
-S = 100  # Number of samples of each measurement to
+N = 200  # Number of random density matrices per x value
+S = 200  # Number of samples of each measurement to
          # simulate for each density matrix 
 # ======================================================
 
@@ -142,16 +142,16 @@ for k in range(M):
         # to keep using the dp variable.
         #
         x = x_start + k * (x_end - x_start)/M
-        pr.enable()
+        #pr.enable()
         dens = simulation.random_density(x)  
-        pr.disable()
+        #pr.disable()
         # Step 2: Generate measurement data
         #
         # Generate data for X, Y and Z measurements
         #
-        #pr.enable()
+        pr.enable()
         X_data = simulation.simulate(dens,proj_X,values_X,S)
-        #pr.disable()
+        pr.disable()
         Y_data = simulation.simulate(dens,proj_Y,values_Y,S)
         Z_data = simulation.simulate(dens,proj_Z,values_Z,S)
         
@@ -188,7 +188,7 @@ for k in range(M):
     av_distances[k,:] = [np.mean(dist_op), np.mean(dist_trace), np.mean(dist_fid)]
     non_physical[k] = non_physical_count/N
 
-pr.disable()
+#pr.disable()
 pr.create_stats()
 
 ps = pstats.Stats(pr)
