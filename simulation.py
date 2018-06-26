@@ -29,11 +29,10 @@ from input import *
 #   the other is 1-x.
 #
 def random_density(x):
-    realMat = np.random.random((2,2))
-    U = np.asmatrix(ug.rvs(2)) # Random unitary
-    U_dag = np.matrix.getH(U)
-    diag = np.matrix([[x,0],[0,1-x]])
-    dens = U * diag * U_dag
+    U = ug.rvs(2) # Random unitary
+    U_dag = np.matrix.getH(np.asmatrix(U))
+    diag = [[x,0],[0,1-x]]
+    dens = np.matmul(np.matmul(U, diag), U_dag)
     return dens
 
 
