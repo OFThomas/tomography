@@ -79,6 +79,7 @@ import importlib
 import numpy as np
 from scipy.stats import unitary_group as ug
 import scipy as sc
+from input import get_user_value
 
 ################
 ## SIMULATION ##
@@ -101,7 +102,9 @@ import simulation
 importlib.reload(simulation)
 x = np.random.uniform(0,1) # Generate x
 print("Picked eigenvalues:\n\n\t ",x,",",1-x)
-dens = simulation.density(x,dp)
+dens = simulation.random_density(x)
+print("\nThe random density matrix is\n\n")
+print(dens)
     
 # Step 2: Generate measurement data
 #
@@ -138,16 +141,43 @@ print("prob = tr(pP), where p is the density")
 print("matrix. Then samples are taken from")
 print("a discrete distribution defined by the")
 print("measurement probabilities. The process")
-print("is repeated for Y and Z.\n")
-# User overwrite argument: select number of measurements
-samples = get_user_value("\nChoose the number of measurements in each basis","integer")  
-sim_dat = simulation.simulate(dens,meas_ops,samples)
+print("is repeated for Y and Z.")
 
-for meas in sim_dat['probabilities']: # Measurement operator
-    for outcome in sim_dat['probabilities'][meas]: # Measurement outcome
-        print("The probability of getting",np.around(outcome,dp),
-              "from measurement",meas,"is",
-              np.around(sim_dat['probabilities'][meas][outcome],dp))
+# Preliminaries: compute the projectors
+
+I = np.matrix([[1,0],[0,1]])
+X = np.matrix([[0,1],[1,0]])
+Y = np.matrix([[0,-1j],[1j,0]])
+Z = np.matrix([[1,0],[0,-1]])
+
+values_X, vectors_X = np.linalg.eig(X)
+proj_X = np.zeros([2,2,2])
+proj_X[0,:,:] = np.matmul(vectors_X[:,0], np.matrix.getH(vectors_X[:,0]))
+proj_X[1,:,:] = np.matmul(vectors_X[:,1], np.matrix.getH(vectors_X[:,1]))
+print("\nThe projector for",values_X[0],"outcome of X is\n\n",proj_X[0,:,:])
+print("\nThe projector for",values_X[1],"outcome of X is\n\n",proj_X[1,:,:])
+
+
+values_Y, vectors_Y = np.linalg.eig(Y)
+proj_Y = np.zeros([2,2,2],dtype='complex')
+proj_Y[0,:,:] = np.matmul(vectors_Y[:,0], np.matrix.getH(vectors_Y[:,0]))
+proj_Y[1,:,:] = np.matmul(vectors_Y[:,1], np.matrix.getH(vectors_Y[:,1]))
+print("\nThe projector for",values_Y[0],"outcome of Y is\n\n",proj_Y[0,:,:])
+print("\nThe projector for",values_Y[1],"outcome of Y is\n\n",proj_Y[1,:,:])
+
+
+values_Z, vectors_Z = np.linalg.eig(Z)
+proj_Z = np.zeros([2,2,2])
+proj_Z[0,:,:] = np.matmul(vectors_Z[:,0], np.matrix.getH(vectors_Z[:,0]))
+proj_Z[1,:,:] = np.matmul(vectors_Z[:,1], np.matrix.getH(vectors_Z[:,1]))
+print("\nThe projector for",values_Z[0],"outcome of Z is\n\n",proj_Z[0,:,:])
+print("\nThe projector for",values_Z[1],"outcome of Z is\n\n",proj_Z[1,:,:])
+
+S = get_user_value("\nChoose the number of measurements in each basis","integer")  
+
+X_data = simulation.simulate(dens,proj_X,values_X,S)
+Y_data = simulation.simulate(dens,proj_Y,values_Y,S)
+Z_data = simulation.simulate(dens,proj_Z,values_Z,S)
 
 ################
 ## ESTIMATION ##
@@ -164,7 +194,7 @@ for meas in sim_dat['probabilities']: # Measurement operator
 #
 import estimation
 importlib.reload(estimation)
-dens_est = estimation.linear_estimate_XYZ(sim_dat)
+dens_est = estimation.linear_estimate_XYZ(X_data, Y_data, Z_data)
 
 print("The estimate for p is:\n\n",dens_est,"\n")
 print("The original density matrix was:\n\n", dens,"\n")
@@ -205,7 +235,7 @@ print("The original density matrix was:\n\n", dens,"\n")
 #
 from stats import * 
 print("======================= Summary statistics =======================\n")
-print("The number of simulated samples for each measurement was\u001b[36m",sim_dat['data']["X"].size,"\u001b[37m\n")
+print("The number of simulated samples for each measurement was\u001b[36m",X_data.size,"\u001b[37m\n")
 variances = {}
 # Get the purity of the density matrix estimate
 eigenvalues, eigenvectors = np.linalg.eig(dens_est)
@@ -217,10 +247,13 @@ print("\nThe purity parameter of the estimated density matrix is",
       np.maximum(np.around(eigenvalues.real[0],dp),
       np.around(eigenvalues.real[1],dp)))
 print("\nThe variances in the simulated data are:\n")
-for key in meas_dat :
-    variances[key] = np.var(meas_dat[key])
-    print("\tThe variance in the",key,"samples was",variances[key])
+
+print("\tThe variance in the X samples was",np.var(X_data))
+print("\tThe variance in the Y samples was",np.var(Y_data))
+print("\tThe variance in the Z samples was",np.var(Z_data))
+
 print("\nDistances between the original density matrix and the estimate:")
-print("\n\tIn the operator norm:\t\t", distance(dens, dens_est, 'operator'))
-print("\tIn the Hilbert Schmidt norm:\t",distance(dens, dens_est, 'trace'))
-print("\tFidelity distance:\t\t",distance(dens, dens_est, 'fidelity'))
+print("\n\tIn the operator norm:\t\t", distance_op(dens, dens_est))
+print("\tIn the Hilbert Schmidt norm:\t",distance_trace(dens, dens_est))
+print("\tFidelity distance:\t\t",distance_fid(dens, dens_est))
+print()
