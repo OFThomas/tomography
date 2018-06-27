@@ -76,11 +76,11 @@ pr = cProfile.Profile()
 pr.enable()
 
 # ======= Test parameter ===============================
-M = 20 # Number of purity parameters x to try
+M = 2000 # Number of purity parameters x to try
 x_start = 0 # Specify purity parameter x range
-x_end = 1
-N = 50  # Number of random density matrices per x value
-S = 50  # Number of samples of each measurement to
+x_end = 0.1
+N = 500  # Number of random density matrices per x value
+S = 500  # Number of samples of each measurement to
          # simulate for each density matrix 
 # ======================================================
 
@@ -154,8 +154,13 @@ for k in range(M):
         X_data = simulation.simulate(dens,proj_X,values_X,S)
         Y_data = simulation.simulate(dens,proj_Y,values_Y,S)
         Z_data = simulation.simulate(dens,proj_Z,values_Z,S)
+
+        proj = np.concatenate((proj_X, proj_Y, proj_Z), axis=0)
+        print(proj)
+        result = estimation.maximum_likelihood_XYZ(X_data, Y_data, Z_data, proj)
+        print(result)
         #pr.disable()
-        
+        exit(1)
         # Step 3: Estimate density matrix
         #
         # Compute linear estimator
