@@ -116,7 +116,7 @@ def better_trace_2 (A):
 #
 def simulate(dens,proj,meas,S):
     N = meas.size
-    sim_dat = np.zeros(S)
+    sim_dat = np.zeros(S,dtype=complex)
     p = np.zeros(N)
     for n in range(N):
         ## Diagonalise it!!!
