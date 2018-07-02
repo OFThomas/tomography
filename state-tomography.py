@@ -103,6 +103,7 @@ importlib.reload(simulation)
 x = np.random.uniform(0,1) # Generate x
 print("Picked eigenvalues:\n\n\t ",x,",",1-x)
 dens = simulation.random_density(x)
+#dens = np.array([[1,0],[0,0]])
 print("\nThe random density matrix is\n\n")
 print(dens)
     
@@ -154,24 +155,22 @@ values_X, vectors_X = np.linalg.eig(X)
 proj_X = np.zeros([2,2,2])
 proj_X[0,:,:] = np.matmul(vectors_X[:,0], np.matrix.getH(vectors_X[:,0]))
 proj_X[1,:,:] = np.matmul(vectors_X[:,1], np.matrix.getH(vectors_X[:,1]))
-print("\nThe projector for",values_X[0],"outcome of X is\n\n",proj_X[0,:,:])
-print("\nThe projector for",values_X[1],"outcome of X is\n\n",proj_X[1,:,:])
-
+#print("\nThe projector for",values_X[0],"outcome of X is\n\n",proj_X[0,:,:])
+#print("\nThe projector for",values_X[1],"outcome of X is\n\n",proj_X[1,:,:])
 
 values_Y, vectors_Y = np.linalg.eig(Y)
 proj_Y = np.zeros([2,2,2],dtype='complex')
 proj_Y[0,:,:] = np.matmul(vectors_Y[:,0], np.matrix.getH(vectors_Y[:,0]))
 proj_Y[1,:,:] = np.matmul(vectors_Y[:,1], np.matrix.getH(vectors_Y[:,1]))
-print("\nThe projector for",values_Y[0],"outcome of Y is\n\n",proj_Y[0,:,:])
-print("\nThe projector for",values_Y[1],"outcome of Y is\n\n",proj_Y[1,:,:])
-
+#print("\nThe projector for",values_Y[0],"outcome of Y is\n\n",proj_Y[0,:,:])
+#print("\nThe projector for",values_Y[1],"outcome of Y is\n\n",proj_Y[1,:,:])
 
 values_Z, vectors_Z = np.linalg.eig(Z)
 proj_Z = np.zeros([2,2,2])
 proj_Z[0,:,:] = np.matmul(vectors_Z[:,0], np.matrix.getH(vectors_Z[:,0]))
 proj_Z[1,:,:] = np.matmul(vectors_Z[:,1], np.matrix.getH(vectors_Z[:,1]))
-print("\nThe projector for",values_Z[0],"outcome of Z is\n\n",proj_Z[0,:,:])
-print("\nThe projector for",values_Z[1],"outcome of Z is\n\n",proj_Z[1,:,:])
+#print("\nThe projector for",values_Z[0],"outcome of Z is\n\n",proj_Z[0,:,:])
+#print("\nThe projector for",values_Z[1],"outcome of Z is\n\n",proj_Z[1,:,:])
 
 S = get_user_value("\nChoose the number of measurements in each basis","integer")  
 
@@ -194,7 +193,8 @@ Z_data = simulation.simulate(dens,proj_Z,values_Z,S)
 #
 import estimation
 importlib.reload(estimation)
-dens_est = estimation.linear_estimate_XYZ(X_data, Y_data, Z_data)
+proj = np.concatenate((proj_X, proj_Y, proj_Z), axis=0)
+dens_est = estimation.enm_XYZ(X_data, Y_data, Z_data)[0]
 
 print("The estimate for p is:\n\n",dens_est,"\n")
 print("The original density matrix was:\n\n", dens,"\n")
