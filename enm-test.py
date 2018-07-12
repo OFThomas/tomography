@@ -70,16 +70,17 @@ importlib.reload(estimation)
 from matplotlib.offsetbox import AnchoredText
 import cProfile
 import pstats
+from progress import *
 
 pr = cProfile.Profile()
 pr.enable()
 
 # ======= Test parameter ===============================
-M = 200  # Number of purity parameters x to try
+M = 2000  # Number of purity parameters x to try
 x_start = 0 # Specify purity parameter x range
 x_end = 1
-N = 100  # Number of random density matrices per x value
-S = 100  # Number of samples of each measurement to
+N = 500  # Number of random density matrices per x value
+S = 500  # Number of samples of each measurement to
         # simulate for each density matrix 
 # ======================================================
 
@@ -185,15 +186,20 @@ for k in range(M):
         eigenvalues = np.linalg.eigvals(dens_est)
         if eigenvalues[0] < 0 or eigenvalues[1] < 0:
             non_physical_count = non_physical_count + 1
+
+        #p = (k*N+n)/(M*N)
+        #show_progress(pr,p)
         
     # Step 5: Average the distances 
     #
     # Average the distances for each value of x
     #
-    print(eigenvalues[0])
+    #print(eigenvalues[0])
     av_distances[k,:] = [np.mean(dist_op), np.mean(dist_trace), np.mean(dist_fid)]
     non_physical[k] = non_physical_count/N
-
+    p = (k+1)/M
+    show_progress(pr,p)
+    
 pr.disable()
 pr.create_stats()
 
