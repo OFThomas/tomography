@@ -190,7 +190,7 @@ class ENM():
         def d(x,rho_2):
             # x specifies rho = T T^
             rho_1 = np.matmul(np.array([[x[0], 0],[x[1]+1j*x[2], x[3]]]),np.array([[x[0], x[1]-1j*x[2]],[0, x[3]]]))
-            distance = sts.distance_op(rho_1, rho_2)
+            distance = sts.distance_trace(rho_1, rho_2)
             return distance    
 
         rho_linear = linear_estimate_XYZ(X_data, Y_data, Z_data)
