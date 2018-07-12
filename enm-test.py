@@ -74,13 +74,12 @@ from progress import *
 
 pr = cProfile.Profile()
 pr.enable()
-
 # ======= Test parameter ===============================
-M = 2000  # Number of purity parameters x to try
+M = 5  # Number of purity parameters x to try
 x_start = 0 # Specify purity parameter x range
 x_end = 1
-N = 500  # Number of random density matrices per x value
-S = 500  # Number of samples of each measurement to
+N = 5  # Number of random density matrices per x value
+S = 5  # Number of samples of each measurement to
         # simulate for each density matrix 
 # ======================================================
 
@@ -108,6 +107,11 @@ values_Z, vectors_Z = np.linalg.eig(Z)
 proj_Z = np.zeros([2,2,2])
 proj_Z[0,:,:] = np.matmul(vectors_Z[:,0], np.matrix.getH(vectors_Z[:,0]))
 proj_Z[1,:,:] = np.matmul(vectors_Z[:,1], np.matrix.getH(vectors_Z[:,1]))
+
+# Open a file for writing
+file = open("enm_test_1.dat", "w")
+file.write("Distances between estimated and original density matrices using various distances:\n\n")
+file.write("OPERATOR, \t\tTRACE, \t\tFIDELITY\n")
 
 # Define x -- put a loop here ----------------------------------------- LOOP for x between 0 and 1
 #
@@ -196,16 +200,21 @@ for k in range(M):
     #
     #print(eigenvalues[0])
     av_distances[k,:] = [np.mean(dist_op), np.mean(dist_trace), np.mean(dist_fid)]
+    file.write("{0:.5f},\t\t{1:.5f},\t{2:.5f}\n".format(np.mean(dist_op),
+                                                np.mean(dist_trace),
+                                                np.mean(dist_fid)))
     non_physical[k] = non_physical_count/N
     p = (k+1)/M
     show_progress(pr,p)
+
+file.close
     
 pr.disable()
 pr.create_stats()
 
 ps = pstats.Stats(pr)
 total_time = ps.total_tt
-pr.print_stats(sort='cumulative')
+#pr.print_stats(sort='cumulative')
 
 # Step 6: Process the data 
 #
