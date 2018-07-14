@@ -1,4 +1,4 @@
-#!/usr/local/bin/python3
+#!/usr/bin/python3
 #############################################################
 # Title: Testing extended norm minimisation
 #
@@ -70,16 +70,16 @@ importlib.reload(estimation)
 from matplotlib.offsetbox import AnchoredText
 import cProfile
 import pstats
+from progress import *
 
 pr = cProfile.Profile()
 pr.enable()
-
 # ======= Test parameter ===============================
-M = 5  # Number of purity parameters x to try
+M = 2000  # Number of purity parameters x to try
 x_start = 0 # Specify purity parameter x range
 x_end = 1
-N = 100  # Number of random density matrices per x value
-S = 3  # Number of samples of each measurement to
+N = 500  # Number of random density matrices per x value
+S = 500  # Number of samples of each measurement to
         # simulate for each density matrix 
 # ======================================================
 
@@ -107,6 +107,11 @@ values_Z, vectors_Z = np.linalg.eig(Z)
 proj_Z = np.zeros([2,2,2])
 proj_Z[0,:,:] = np.matmul(vectors_Z[:,0], np.matrix.getH(vectors_Z[:,0]))
 proj_Z[1,:,:] = np.matmul(vectors_Z[:,1], np.matrix.getH(vectors_Z[:,1]))
+
+# Open a file for writing
+file = open("enm_test_1.dat", "w")
+file.write("Distances between estimated and original density matrices using various distances:\n\n")
+file.write("PURITY, \tOPERATOR, \tTRACE, \t\tFIDELITY\n")
 
 # Define x -- put a loop here ----------------------------------------- LOOP for x between 0 and 1
 #
@@ -156,7 +161,7 @@ for k in range(M):
 
         proj = np.concatenate((proj_X, proj_Y, proj_Z), axis=0)
         #print(proj)
-        dens_est = estimation.ENM.enm_XYZ(X_data, Y_data, Z_data)[0]
+
         #print(result)
         #pr.disable()
         # Step 3: Estimate density matrix
@@ -166,7 +171,7 @@ for k in range(M):
         # Then tr(pI) is computed by requiring that
         # the density matrix be normalised
         #
-        #dens_est = estimation.linear_estimate_XYZ(X_data, Y_data, Z_data)
+        dens_est = estimation.ENM.enm_XYZ(X_data, Y_data, Z_data)[0]
         
         # Step 4: Compute and the distances
         #
@@ -185,21 +190,31 @@ for k in range(M):
         eigenvalues = np.linalg.eigvals(dens_est)
         if eigenvalues[0] < 0 or eigenvalues[1] < 0:
             non_physical_count = non_physical_count + 1
+
+        #p = (k*N+n)/(M*N)
+        #show_progress(pr,p)
         
     # Step 5: Average the distances 
     #
     # Average the distances for each value of x
     #
-    print(eigenvalues[0])
+    #print(eigenvalues[0])
     av_distances[k,:] = [np.mean(dist_op), np.mean(dist_trace), np.mean(dist_fid)]
+    file.write("{0:.5f},\t{1:.5f},\t{2:.5f}, \t{3:.5f}\n".format(x, np.mean(dist_op),
+                                                                   np.mean(dist_trace),
+                                                                   np.mean(dist_fid)))
     non_physical[k] = non_physical_count/N
+    p = (k+1)/M
+    show_progress(pr,p)
 
+file.close
+    
 pr.disable()
 pr.create_stats()
 
 ps = pstats.Stats(pr)
 total_time = ps.total_tt
-pr.print_stats(sort='cumulative')
+#pr.print_stats(sort='cumulative')
 
 # Step 6: Process the data 
 #

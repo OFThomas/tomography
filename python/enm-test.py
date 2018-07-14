@@ -1,15 +1,12 @@
-#!/usr/bin/python3
 #############################################################
 # Title: Testing extended norm minimisation
 #
-# Date created: 11th June 2018
+# Date created: 14th July 2018
 #
-# Language:    Python 3
+# Language:    Cpp
 #
-# Overview:    The program tests the extended norm
-#              minimisation algorithm in the case
-#              of an informationally complete set of
-#              measurements 
+# Overview:    The program tests the linear estimator
+#              for a single qubit density matrix
 #
 # Details:     The script performs the following steps:
 #
@@ -32,7 +29,7 @@
 #                 the state p.
 #
 #              3) Compute the density matrix using the
-#                 extended norm minimsation.
+#                 linear estimator
 #
 #              4) Compute the distance between the
 #                 estimate and the true density matrix
@@ -150,6 +147,7 @@ for k in range(M):
         dens = simulation.random_density(x)
         #values_dens,vectors_dens = np.linalg.eig(dens)
         #pr.disable()
+        
         # Step 2: Generate measurement data
         #
         # Generate data for X, Y and Z measurements

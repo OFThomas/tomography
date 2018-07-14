@@ -1,9 +1,9 @@
 /************************************************************
-* Title: Testing extended norm minimisation
+* Title: Testing the linear estimator
 *
-* Date created: 11th June 2018
+* Date created: 14th July 2018
 *
-* Language:    C++
+* Language:    Cpp
 *
 * Overview:    The program tests the extended norm
 *              minimisation algorithm in the case
@@ -31,7 +31,7 @@
 *                 the state p.
 *
 *              3) Compute the density matrix using the
-*                 extended norm minimsation.
+*                 linear estimator
 *
 *              4) Compute the distance between the
 *                 estimate and the true density matrix
@@ -53,24 +53,34 @@
 *************************************************************/
 
 #define DEBUG
+//#define DEBUG_PRINT_RANDOM_DENSITY
+#define DEBUG_PRINT_PROBABILITY
+//#define DEBUG_PRINT_DIAG
+//#define DEBUG_PRINT_RANDOM
+#define DEBUG_PRINT_MEASUREMENTS
 
 #include <iostream>
 #include <complex>
-#include "Eigen/Dense"
+#include <cstdlib>
+#include <ctime>
+#include <random> 
+#include "simulation.h"
+#include "estimation.h"
+#include "stats.h"
 
 int main() {
-
+  
   using Eigen::MatrixXd;
   typedef Eigen::Matrix<std::complex<double>,
   			Eigen::Dynamic,
   			Eigen::Dynamic> MatrixXc;
-  
-  // ======= Test parameter ===============================
-  int M = 2000;  // Number of purity parameters x to try
+
+    // ======= Test parameter ===============================
+  int M = 11;  // Number of purity parameters x to try
   double x_start = 0; // Specify purity parameter x range
   double x_end = 1;
-  int N = 500;  // Number of random density matrices per x value
-  int S = 500;  // Number of samples of each measurement to
+  int N = 1;  // Number of random density matrices per x value
+  int S = 10;  // Number of samples of each measurement to
   // simulate for each density matrix 
   // ======================================================
 
@@ -80,30 +90,218 @@ int main() {
   // Preliminaries: compute the projectors
   MatrixXc I(2,2); I << 1, 0, 0, 1;
   MatrixXc X(2,2); X << 0, 1, 1, 0;
-  MatrixXc Y(2,2); Y << 0, (0,-1), (0,1), 0;
+  MatrixXc Y(2,2); Y << 0, std::complex<double>(0,-1),
+		     std::complex<double>(0,1), 0;
   MatrixXc Z(2,2); Z << 1, 0, 0, -1;
 
+  // Seed the random number generator
+  srand(time(NULL));
   
 #ifdef DEBUG
+#ifdef DEBUG_PRINT_IXYZ
+  std::cout << "\n============== DEFINE X, Y AND Z ==============\n\n"; 
   std::cout << I << " This is I" << std::endl << std::endl;
   std::cout << X << " This is X" << std::endl << std::endl;
   std::cout << Y << " This is Y" << std::endl << std::endl;
   std::cout << Z << " This is Z" << std::endl << std::endl;
 #endif
-
-  // values_X, vectors_X = np.linalg.eig(X)
-  // proj_X = np.zeros([2,2,2])
-  // proj_X[0,:,:] = np.matmul(vectors_X[:,0], np.matrix.getH(vectors_X[:,0]))
-  // proj_X[1,:,:] = np.matmul(vectors_X[:,1], np.matrix.getH(vectors_X[:,1]))
-  Eigen::SelfAdjointEigenSolver<MatrixXc> eigensolver(X);
-  if(eigensolver.info() != Eigen::Success) abort();
-#ifdef DEBUG
-  std::cout << "The eigenvalues of X are\n"
-	    << eigensolver.eigenvalues()
-	    << std::endl;
-  std::cout << "This matrix contains columns which are the eigenvectors of X\n"
-	    << eigensolver.eigenvectors()
-	    << std::endl;
 #endif
+
+  MatrixXc vectors;
+  MatrixXc proj_X[2];
+  MatrixXc proj_Y[2];
+  MatrixXc proj_Z[2];
+  double outcomes_X[2];
+  double outcomes_Y[2];
+  double outcomes_Z[2];
+  
+  // Compute eigenvectors and eigenvalues of X, Y and Z
+  Eigen::SelfAdjointEigenSolver<MatrixXc> eigenX(X);
+  if(eigenX.info() != Eigen::Success) abort();
+  Eigen::SelfAdjointEigenSolver<MatrixXc> eigenY(Y);
+  if(eigenY.info() != Eigen::Success) abort();
+  Eigen::SelfAdjointEigenSolver<MatrixXc> eigenZ(Z);
+  if(eigenZ.info() != Eigen::Success) abort();
+
+  // Compute all the projectors and store outcomes
+  vectors = eigenX.eigenvectors();
+  proj_X[0] = vectors.col(0) * vectors.col(0).adjoint();
+  proj_X[1] = vectors.col(1) * vectors.col(1).adjoint();
+  outcomes_X[0] = eigenX.eigenvalues()[0];
+  outcomes_X[1] = eigenX.eigenvalues()[1];
+  vectors = eigenY.eigenvectors();
+  proj_Y[0] = vectors.col(0) * vectors.col(0).adjoint();
+  proj_Y[1] = vectors.col(1) * vectors.col(1).adjoint();
+  outcomes_Y[0] = eigenY.eigenvalues()[0];
+  outcomes_Y[1] = eigenY.eigenvalues()[1];
+  vectors = eigenZ.eigenvectors();
+  proj_Z[0] = vectors.col(0) * vectors.col(0).adjoint();
+  proj_Z[1] = vectors.col(1) * vectors.col(1).adjoint();
+  outcomes_Z[0] = eigenZ.eigenvalues()[0];
+  outcomes_Z[1] = eigenZ.eigenvalues()[1];
+  
+#ifdef DEBUG
+#ifdef DEBUG_PRINT_EIGEN
+  // Print all the eigenvalues and eigenvectors
+  std::cout << "\n======== PRINT EIGENVALUES AND EIGENVECTORS ===========\n\n";
+  std::cout << "The eigenvalues of X are\n"
+	    << eigenX.eigenvalues()
+	    << std::endl << std::endl;
+  std::cout << "This matrix contains columns which are the eigenvectors of X\n"
+	    << eigenX.eigenvectors()
+	    << std::endl << std::endl;
+  std::cout << "The eigenvalues of Y are\n"
+	    << eigenY.eigenvalues()
+	    << std::endl << std::endl;
+  std::cout << "This matrix contains columns which are the eigenvectors of Z\n"
+	    << eigenY.eigenvectors()
+	    << std::endl << std::endl;
+  std::cout << "The eigenvalues of Z are\n"
+	    << eigenZ.eigenvalues(x)
+	    << std::endl << std::endl;
+  std::cout << "This matrix contains columns which are the eigenvectors of Z\n"
+	    << eigenZ.eigenvectors()
+	    << std::endl << std::endl;
+
+  // Print all the projectors
+  std::cout << "\n============== PRINT PROJECTORS ==============\n\n";
+  std::cout << "The projector of X corresponding to outcome "
+	    << eigenX.eigenvalues()[0] << " is\n"
+	    << proj_X[0]
+	    << std::endl << std::endl;
+  std::cout << "The projector of X corresponding to outcome "
+	    << eigenX.eigenvalues()[1] << " is\n"
+	    << proj_X[1]
+	    << std::endl << std::endl;
+  std::cout << "The projector of Y corresponding to outcome "
+	    << eigenY.eigenvalues()[0] << " is\n"
+	    << proj_Y[0]
+	    << std::endl << std::endl;
+  std::cout << "The projector of Y corresponding to outcome "
+	    << eigenY.eigenvalues()[1] << " is\n"
+	    << proj_Y[1]
+	    << std::endl << std::endl;
+  std::cout << "The projector of Z corresponding to outcome "
+	    << eigenZ.eigenvalues()[0] << " is\n"
+	    << proj_Z[0]
+	    << std::endl << std::endl;
+  std::cout << "The projector of Z corresponding to outcome "
+	    << eigenZ.eigenvalues()[1] << " is\n"
+	    << proj_Z[1]
+	    << std::endl << std::endl;
+#endif
+#endif
+  
+  // Define x -- put a loop here ------------------- LOOP for x between 0 and 1
+  //
+  // This loop runs through different values of the purity parameter x,
+  // and tests the ability of the linear estimator in each case
+  //
+
+  // Variables to store the estimation error distances
+  float dist_op[N];
+  float dist_trace[N];
+  float dist_fid[N];
+
+  int dp = 5; // Decimal places for printing
+  double x = 0; // Purity parameter
+  
+  for(int k=0; k<M; k++) {
+
+    // Loop N times for each value of x ------ inner loop -- N trials for each x
+    //
+    // This loop generates N random density matrices for each fixed value of x
+    // which used to simulate measurement data and run the estimator
+    //
+    for(int n=0; n<N; n++) {
+      // Step 1: Prepare the density matrix
+      //
+      // The purity parameter x is picked between 0
+      // and 1.
+      //
+      // Note: any time a numerical check is performed
+      // and printed out, I've rounded the result to
+      // make it more readable. Set the decimal places
+      // to keep using the dp variable.
+      //
+      x = x_start + k * (x_end - x_start)/M;
+      // Generate a density matrix with eigenvalues x and 1-x
+      MatrixXc diag(2,2);
+      diag << x, 0, 0, 1-x; 
+      // Generate a random complex matrix
+      MatrixXc cmat = MatrixXc::Random(2,2);
+      // Obtain a random unitary matrix using Householder QR (see Eigen docs)
+      Eigen::HouseholderQR<MatrixXc> qr(cmat);
+      MatrixXc U = qr.householderQ(); // Get Q (the unitary matrix)
+      MatrixXc dens = U * diag * U.adjoint();
+      
+#ifdef DEBUG
+#ifdef DEBUG_PRINT_RANDOM
+      std::cout << cmat << " This is a random complex matrix\n" << std::endl;
+#endif
+#ifdef DEBUG_PRINT_RANDOM_UNITARY
+      std::cout << U << " This is a unitary matrix\n" << std::endl;
+#endif
+#ifdef DEBUG_PRINT_DIAG
+      std::cout << diag << " This is the diagonal matrix\n" << std::endl;
+#endif
+#ifdef DEBUG_PRINT_RANDOM_DENSITY
+      std::cout << dens << " This is the density matrix\n" << std::endl;
+#endif
+#endif
+      // Step 2: Generate measurement data
+      //
+      // Generate data for X, Y and Z measurements
+      //
+      double X_data[S]; // To contain the (real) measurement values
+      double Y_data[S];
+      double Z_data[S];
+      simulate(dens, proj_X, outcomes_X, 10, X_data);
+      simulate(dens, proj_Y, outcomes_X, 10, Y_data);
+      simulate(dens, proj_Z, outcomes_X, 10, Z_data);
+
+#ifdef DEBUG
+#ifdef DEBUG_PRINT_MEASUREMENTS
+      std::cout << "The simulated X values are:\n";
+      for(int k=0; k<S; k++) std::cout << X_data[k] << ", ";
+      std::cout << std::endl;
+#endif
+#endif	
+
+      // Step 3: Estimate density matrix
+      //
+      // Compute linear estimator
+      //
+      // Then tr(pI) is computed by requiring that
+      // the density matrix be normalised
+      //
+      MatrixXc dens_est = linear_estimate_XYZ(X_data, Y_data, Z_data, S);
+
+      // Step 4: Compute and the distances
+      //
+      // Compute distances between the estimated
+      // and true density matrix using the
+      // different distance fuctions.
+      //
+      dist_op[n] = distance_op(dens, dens_est);
+	/*
+        dist_trace[n] = stats.distance_trace(dens, dens_est)  
+        #pr.enable()
+        dist_fid[n] = stats.distance_fid(dens, dens_est)
+        #dist_fid[n] = stats.distance_fid_2(values_dens,vectors_dens,dens_est)
+        #pr.disable()
+        # Count the number of non-physical matrices
+        #
+        eigenvalues = np.linalg.eigvals(dens_est)
+        if eigenvalues[0] < 0 or eigenvalues[1] < 0:
+            non_physical_count = non_physical_count + 1
+
+        #p = (k*N+n)/(M*N)
+        #show_progress(pr,p)
+	*/
+      
+    } // end of inner loop (fixed purity, random density matrices)
+  
+  } // end of outer loop (looping through different purities)
   
 }
