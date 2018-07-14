@@ -1,0 +1,18 @@
+# Print progress to the console
+
+import cProfile
+import pstats
+import numpy as np
+
+def show_progress(pr,p):
+    rem = "?"
+    pr.disable()
+    pr.create_stats()
+    ps = pstats.Stats(pr)
+    pr.enable()
+    t = ps.total_tt
+    if p != 0 : rem = str(np.around(t/p - t,3)) 
+    print("Percent complete:\u001b[92m",str(100*p)+"\u001b[32m",
+          "Total time:\u001b[93m",str(t)+"\u001b[32m", 
+          "Estimated time remaining:\u001b[94m",str(rem)+"\u001b[32m")
+    

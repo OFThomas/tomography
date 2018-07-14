@@ -1,0 +1,5 @@
+* Figures
+** Figure_1 to Figure_7: Comparison of distance measures for different purities
+The point of these plots is to determine how the trace distance, the operator distance and the fidelity compare when used to compare the estimated density matrix to the true density matrix for the linear estimator. The figures include data about how many samples were used for each measurement (X, Y and Z) to generate the density matrix. Figure_5.png and Figure_7.png contain the same data for equivalent runs before and after optimising the code.
+* Data
+** The data in enm_test_1.dat is the first run of the ENM algorithm at 2000 purity points, using 500 density matrices per point and 500 X, Y, Z measurements. The run took just over a day to complete. The figure showing the plotted data is enm_test_1.png. The probabilities did not get recorded so only show up in the figure
