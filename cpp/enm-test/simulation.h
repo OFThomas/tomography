@@ -15,7 +15,7 @@
 *
 ************************************************************/
 
-#define DEBUG
+//#define DEBUG
 //#define DEBUG_PRINT_RANDOM_DENSITY
 #define DEBUG_PRINT_PROBABILITY
 //#define DEBUG_PRINT_DIAG

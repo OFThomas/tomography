@@ -1,6 +1,6 @@
 CC = g++
-CFLAGS = -std=c++11 -c -I../
-LFLAGS = -std=c++11 -I../
+CFLAGS = -std=c++11 -O3 -c -I../
+LFLAGS = -std=c++11 -O3 -I../
 
 enm-test: enm-test.o simulation.o estimation.o stats.o
 	$(CC) $(LFLAGS) -o enm-test enm-test.o simulation.o estimation.o stats.o

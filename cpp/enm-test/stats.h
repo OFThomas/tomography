@@ -13,6 +13,8 @@
 *
 ************************************************************/
 
+#include "iostream"
+#include "Eigen/Dense"
 #include "Eigen/SVD"
 
 typedef Eigen::Matrix<std::complex<double>,
@@ -27,3 +29,28 @@ typedef Eigen::Matrix<std::complex<double>,
 // variants of the norm to consider)
 // 
 float distance_op(MatrixXc A, MatrixXc B);
+
+
+// Distance using the Frobenius norm
+//
+// This uses a library function from
+// Eigen which computes the Frobenius
+// (aka Hilbert-Schmidt) norm by
+// default
+//
+float distance_trace(MatrixXc A, MatrixXc B);
+
+// Fidelity distance
+//
+// The fidelity distance d is
+// defined as follows:
+//
+//  F(A,B) = tr[ sqrt(sqrt(A) B sqrt(A)) ]
+//  d(A.B) = arccos[F(A,B)]
+//
+// This is computed using a trick that
+// involves diagonalising A to ease the
+// sqrt function. This originated as a
+// python optimisation -- it might not
+// be necessary here.
+float distance_fid(const MatrixXc A, const MatrixXc B);

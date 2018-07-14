@@ -52,7 +52,7 @@
 *
 *************************************************************/
 
-#define DEBUG
+//#define DEBUG
 //#define DEBUG_PRINT_RANDOM_DENSITY
 #define DEBUG_PRINT_PROBABILITY
 //#define DEBUG_PRINT_DIAG
@@ -64,28 +64,30 @@
 #include <cstdlib>
 #include <ctime>
 #include <random> 
+#include <fstream>
+#include <iomanip>
 #include "simulation.h"
 #include "estimation.h"
 #include "stats.h"
 
 int main() {
-  
+
   using Eigen::MatrixXd;
   typedef Eigen::Matrix<std::complex<double>,
   			Eigen::Dynamic,
   			Eigen::Dynamic> MatrixXc;
 
     // ======= Test parameter ===============================
-  int M = 11;  // Number of purity parameters x to try
+  int M = 10;  // Number of purity parameters x to try
   double x_start = 0; // Specify purity parameter x range
   double x_end = 1;
-  int N = 1;  // Number of random density matrices per x value
-  int S = 10;  // Number of samples of each measurement to
+  int N = 500;  // Number of random density matrices per x value
+  int S = 500;  // Number of samples of each measurement to
   // simulate for each density matrix 
   // ======================================================
 
   float av_distance[M][3];
-  float non_physical[M];
+  int non_physical[M];
 
   // Preliminaries: compute the projectors
   MatrixXc I(2,2); I << 1, 0, 0, 1;
@@ -96,6 +98,18 @@ int main() {
 
   // Seed the random number generator
   srand(time(NULL));
+
+  // Get an output file ready
+  std::ofstream file;
+  file.open("linear_test_1_cpp.dat");
+  file << "Distances between estimated and "
+       << "original density matrices using various distances:"
+       << std::endl << std::endl;
+  
+  file << "PURITY, \tOPERATOR, \tTRACE, \t\tFIDELITY, \tNON PHYSICAL"
+       << std::endl;
+  // Set precision
+  file << std::fixed << std::setprecision(5) << std::endl;
   
 #ifdef DEBUG
 #ifdef DEBUG_PRINT_IXYZ
@@ -207,7 +221,9 @@ int main() {
   double x = 0; // Purity parameter
   
   for(int k=0; k<M; k++) {
-
+    // Temporary counter for non-physical estimates
+    int non_physical_count = 0;				
+    
     // Loop N times for each value of x ------ inner loop -- N trials for each x
     //
     // This loop generates N random density matrices for each fixed value of x
@@ -256,9 +272,9 @@ int main() {
       double X_data[S]; // To contain the (real) measurement values
       double Y_data[S];
       double Z_data[S];
-      simulate(dens, proj_X, outcomes_X, 10, X_data);
-      simulate(dens, proj_Y, outcomes_X, 10, Y_data);
-      simulate(dens, proj_Z, outcomes_X, 10, Z_data);
+      simulate(dens, proj_X, outcomes_X, S, X_data);
+      simulate(dens, proj_Y, outcomes_X, S, Y_data);
+      simulate(dens, proj_Z, outcomes_X, S, Z_data);
 
 #ifdef DEBUG
 #ifdef DEBUG_PRINT_MEASUREMENTS
@@ -266,8 +282,8 @@ int main() {
       for(int k=0; k<S; k++) std::cout << X_data[k] << ", ";
       std::cout << std::endl;
 #endif
-#endif	
-
+#endif
+      
       // Step 3: Estimate density matrix
       //
       // Compute linear estimator
@@ -284,24 +300,43 @@ int main() {
       // different distance fuctions.
       //
       dist_op[n] = distance_op(dens, dens_est);
-	/*
-        dist_trace[n] = stats.distance_trace(dens, dens_est)  
-        #pr.enable()
-        dist_fid[n] = stats.distance_fid(dens, dens_est)
-        #dist_fid[n] = stats.distance_fid_2(values_dens,vectors_dens,dens_est)
-        #pr.disable()
-        # Count the number of non-physical matrices
-        #
-        eigenvalues = np.linalg.eigvals(dens_est)
-        if eigenvalues[0] < 0 or eigenvalues[1] < 0:
-            non_physical_count = non_physical_count + 1
-
-        #p = (k*N+n)/(M*N)
-        #show_progress(pr,p)
-	*/
+      dist_trace[n] = distance_trace(dens, dens_est);
+      dist_fid[n] = distance_fid(dens, dens_est);
+      // Count the number of non-physical matrices
+      //
+      Eigen::SelfAdjointEigenSolver<MatrixXc> eigenD(dens_est);
+      if(eigenD.info() != Eigen::Success) abort();
+      
+      if (eigenD.eigenvalues()[0] < 0 || eigenD.eigenvalues()[1] < 0) {
+	non_physical_count = non_physical_count + 1;
+      }
       
     } // end of inner loop (fixed purity, random density matrices)
-  
+
+    // Step 5: Average the distances 
+    //
+    // Average the distances for each value of x
+    //
+    double tmp_op(0), tmp_trace(0), tmp_fid(0);
+    for(int k=0; k<S; k++) {
+      tmp_op += dist_op[k];
+      tmp_trace += dist_trace[k];
+      tmp_fid += dist_fid[k];
+    }
+    double mean_op = tmp_op/S;
+    double mean_trace = tmp_trace/S;
+    double mean_fid = tmp_fid/S;
+    av_distance[k][0] = mean_op;
+    av_distance[k][1] = mean_trace;
+    av_distance[k][2] = mean_fid;
+    non_physical[k] = non_physical_count/N;
+
+    file << x << ",\t"
+	 << mean_op << ",\t"
+	 << mean_trace << ",\t"
+	 << mean_fid << ",\t"
+	 << non_physical[k] << "\n";
+    
   } // end of outer loop (looping through different purities)
-  
+  file.close();
 }
