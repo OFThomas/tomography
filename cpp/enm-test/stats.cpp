@@ -23,10 +23,10 @@
 // than that (as in, there are more
 // variants of the norm to consider)
 //
-float distance_op(MatrixXc A, MatrixXc B) {
+double distance_op(MatrixXc A, MatrixXc B) {
   Eigen::JacobiSVD<MatrixXc> svd(A-B, Eigen::ComputeThinU | Eigen::ComputeThinV);
   // The first singular value is the largest
-  float distance = svd.singularValues()[0];
+  double distance = svd.singularValues()[0];
   return distance;
 }
 
@@ -55,7 +55,7 @@ double distance_trace(MatrixXc A, MatrixXc B){
 // sqrt function. This originated as a
 // python optimisation -- it might not
 // be necessary here.
-float distance_fid(const MatrixXc A, const MatrixXc B) {
+double distance_fid(const MatrixXc A, const MatrixXc B) {
 
   // Obtain eigenvalues of A
   Eigen::SelfAdjointEigenSolver<MatrixXc> eigenA(A);
@@ -73,8 +73,23 @@ float distance_fid(const MatrixXc A, const MatrixXc B) {
   if(eigenD.info() != Eigen::Success) abort();
   double fidelity = std::sqrt(std::abs(eigenD.eigenvalues()[0]))
     + std::sqrt(std::abs(eigenD.eigenvalues()[0])); 
-  float distance = std::acos(fidelity);
+  double distance = std::acos(fidelity);
   
   return distance;
 
+}
+
+// Fidelity distance 2
+//
+// This is a more direct implementation of the
+// fidelity distance, directly from the definition.
+//
+double distance_fid_2(const MatrixXc A, const MatrixXc B) {
+  Eigen::SelfAdjointEigenSolver<MatrixXc> eigenA(A);
+  MatrixXc C = eigenA.operatorSqrt();
+  Eigen::SelfAdjointEigenSolver<MatrixXc> eigenCBC(C * B * C);
+  MatrixXc D = eigenCBC.operatorSqrt();
+  double fidelity = std::real(D.trace());
+  double distance = std::acos(fidelity);
+  return distance;
 }

@@ -28,7 +28,7 @@ typedef Eigen::Matrix<std::complex<double>,
 // than that (as in, there are more
 // variants of the norm to consider)
 // 
-float distance_op(MatrixXc A, MatrixXc B);
+double distance_op(MatrixXc A, MatrixXc B);
 
 
 // Distance using the Frobenius norm
@@ -53,4 +53,9 @@ double distance_trace(MatrixXc A, MatrixXc B);
 // sqrt function. This originated as a
 // python optimisation -- it might not
 // be necessary here.
-float distance_fid(const MatrixXc A, const MatrixXc B);
+//
+// distance_fid_2 implements the same
+// operation in a different method
+double distance_fid(const MatrixXc A, const MatrixXc B);
+double distance_fid_2(const MatrixXc A, const MatrixXc B);
+

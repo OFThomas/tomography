@@ -114,20 +114,15 @@ for k in range(M):
         dens = simulation.random_density(x)
         #values_dens,vectors_dens = np.linalg.eig(dens)
         #pr.disable()
+
         # Step 2: Generate measurement data
         #
         # Generate data for X, Y and Z measurements
         #
-        #pr.enable()
         X_data = simulation.simulate(dens,proj_X,values_X,S)
         Y_data = simulation.simulate(dens,proj_Y,values_Y,S)
         Z_data = simulation.simulate(dens,proj_Z,values_Z,S)
 
-        proj = np.concatenate((proj_X, proj_Y, proj_Z), axis=0)
-        #print(proj)
-        dens_est = estimation.linear_estimate_XYZ(X_data, Y_data, Z_data)
-        #print(result)
-        #pr.disable()
         # Step 3: Estimate density matrix
         #
         # Compute linear estimator
@@ -135,7 +130,7 @@ for k in range(M):
         # Then tr(pI) is computed by requiring that
         # the density matrix be normalised
         #
-        #dens_est = estimation.linear_estimate_XYZ(X_data, Y_data, Z_data)
+        dens_est = estimation.linear_estimate_XYZ(X_data, Y_data, Z_data)
         
         # Step 4: Compute and the distances
         #
@@ -145,10 +140,8 @@ for k in range(M):
         #
         dist_op[n] = stats.distance_op(dens, dens_est)
         dist_trace[n] = stats.distance_trace(dens, dens_est)
-        #pr.enable()
         dist_fid[n] = stats.distance_fid(dens, dens_est)
-        #dist_fid[n] = stats.distance_fid_2(values_dens,vectors_dens,dens_est)
-        #pr.disable()
+
         # Count the number of non-physical matrices
         #
         eigenvalues = np.linalg.eigvals(dens_est)

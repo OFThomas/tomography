@@ -41,8 +41,6 @@ def random_density(x):
     dens = np.matmul(np.matmul(U, diag), U_dag)
     return dens
 
-
-
 # Function: density(dp)
 #
 #   Generate a density matrix. The functions

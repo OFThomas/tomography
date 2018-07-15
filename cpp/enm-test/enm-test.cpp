@@ -59,7 +59,8 @@
 //#define DEBUG_PRINT_RANDOM
 //#define DEBUG_PRINT_MEASUREMENTS
 //#define DEBUG_PRINT_ESTIMATE
-#define DEBUG_PRINT_ESTIMATES_EIGENVALUES
+//#define DEBUG_PRINT_ESTIMATES_EIGENVALUES
+//#define DEBUG_PRINT_EIGEN
 
 #include <iostream>
 #include <complex>
@@ -100,9 +101,6 @@ int main() {
   MatrixXc Y(2,2); Y << 0, std::complex<double>(0,-1),
 		     std::complex<double>(0,1), 0;
   MatrixXc Z(2,2); Z << 1, 0, 0, -1;
-
-  // Seed the random number generator
-  srand(time(NULL));
 
   // Get an output file ready
   std::ofstream file;
@@ -181,11 +179,11 @@ int main() {
   std::cout << "The eigenvalues of Y are\n"
 	    << eigenY.eigenvalues()
 	    << std::endl << std::endl;
-  std::cout << "This matrix contains columns which are the eigenvectors of Z\n"
+  std::cout << "This matrix contains columns which are the eigenvectors of Y\n"
 	    << eigenY.eigenvectors()
 	    << std::endl << std::endl;
   std::cout << "The eigenvalues of Z are\n"
-	    << eigenZ.eigenvalues(x)
+	    << eigenZ.eigenvalues()
 	    << std::endl << std::endl;
   std::cout << "This matrix contains columns which are the eigenvectors of Z\n"
 	    << eigenZ.eigenvectors()
@@ -255,30 +253,8 @@ int main() {
       // to keep using the dp variable.
       //
       x = x_start + k * (x_end - x_start)/M;
-      // Generate a density matrix with eigenvalues x and 1-x
-      MatrixXc diag(2,2);
-      diag << x, 0, 0, 1-x; 
-      // Generate a random complex matrix
-      MatrixXc cmat = MatrixXc::Random(2,2);
-      // Obtain a random unitary matrix using Householder QR (see Eigen docs)
-      Eigen::HouseholderQR<MatrixXc> qr(cmat);
-      MatrixXc U = qr.householderQ(); // Get Q (the unitary matrix)
-      MatrixXc dens = U * diag * U.adjoint();
-      
-#ifdef DEBUG
-#ifdef DEBUG_PRINT_RANDOM
-      std::cout << cmat << " This is a random complex matrix\n" << std::endl;
-#endif
-#ifdef DEBUG_PRINT_RANDOM_UNITARY
-      std::cout << U << " This is a unitary matrix\n" << std::endl;
-#endif
-#ifdef DEBUG_PRINT_DIAG
-      std::cout << diag << " This is the diagonal matrix\n" << std::endl;
-#endif
-#ifdef DEBUG_PRINT_RANDOM_DENSITY
-      std::cout << dens << " This is the density matrix\n" << std::endl;
-#endif
-#endif
+      MatrixXc dens = random_density(x);
+
       // Step 2: Generate measurement data
       //
       // Generate data for X, Y and Z measurements
@@ -319,9 +295,10 @@ int main() {
       // and true density matrix using the
       // different distance fuctions.
       //
-      dist_op[n] = distance_op(dens, dens_est);
-      dist_trace[n] = distance_trace(dens, dens_est);
-      dist_fid[n] = distance_fid(dens, dens_est);
+      dist_op[n] = distance_op(dens_est, dens);
+      dist_trace[n] = distance_trace(dens_est, dens);
+      dist_fid[n] = distance_fid_2(dens_est, dens);
+
       // Count the number of non-physical matrices
       //
       Eigen::SelfAdjointEigenSolver<MatrixXc> eigenD(dens_est);
@@ -347,10 +324,11 @@ int main() {
     // compute. Therefore the mean is computed over N points.
     //
     double tmp_op(0), tmp_trace(0), tmp_fid(0);
-    for(int k=0; k<N; k++) {
-      tmp_op += dist_op[k];
-      tmp_trace += dist_trace[k];
-      tmp_fid += dist_fid[k];
+    if(tmp_op != 0 || tmp_trace != 0 || tmp_fid != 0) abort();
+    for(int n=0; n<N; n++) {
+      tmp_op += dist_op[n];
+      tmp_trace += dist_trace[n];
+      tmp_fid += dist_fid[n];
     }
     double mean_op = tmp_op/N;
     double mean_trace = tmp_trace/N;
