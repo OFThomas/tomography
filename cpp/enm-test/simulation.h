@@ -17,10 +17,10 @@
 
 //#define DEBUG
 //#define DEBUG_PRINT_RANDOM_DENSITY
-#define DEBUG_PRINT_PROBABILITY
+//#define DEBUG_PRINT_PROBABILITY
 //#define DEBUG_PRINT_DIAG
 //#define DEBUG_PRINT_RANDOM
-#define DEBUG_PRINT_MEASUREMENTS
+//#define DEBUG_PRINT_MEASUREMENTS
 
 #include <iostream>
 #include <cstdlib>

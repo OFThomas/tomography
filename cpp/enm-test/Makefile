@@ -4,7 +4,6 @@ LFLAGS = -std=c++11 -O3 -I../
 
 enm-test: enm-test.o simulation.o estimation.o stats.o
 	$(CC) $(LFLAGS) -o enm-test enm-test.o simulation.o estimation.o stats.o
-	rm -f *.o *~
 
 enm-test.o: enm-test.cpp simulation.h 
 	$(CC) $(CFLAGS) enm-test.cpp

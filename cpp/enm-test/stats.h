@@ -38,7 +38,7 @@ float distance_op(MatrixXc A, MatrixXc B);
 // (aka Hilbert-Schmidt) norm by
 // default
 //
-float distance_trace(MatrixXc A, MatrixXc B);
+double distance_trace(MatrixXc A, MatrixXc B);
 
 // Fidelity distance
 //

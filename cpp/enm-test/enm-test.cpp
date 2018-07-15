@@ -54,10 +54,12 @@
 
 //#define DEBUG
 //#define DEBUG_PRINT_RANDOM_DENSITY
-#define DEBUG_PRINT_PROBABILITY
+//#define DEBUG_PRINT_PROBABILITY
 //#define DEBUG_PRINT_DIAG
 //#define DEBUG_PRINT_RANDOM
-#define DEBUG_PRINT_MEASUREMENTS
+//#define DEBUG_PRINT_MEASUREMENTS
+//#define DEBUG_PRINT_ESTIMATE
+#define DEBUG_PRINT_ESTIMATES_EIGENVALUES
 
 #include <iostream>
 #include <complex>
@@ -66,19 +68,22 @@
 #include <random> 
 #include <fstream>
 #include <iomanip>
+#include <chrono>
 #include "simulation.h"
 #include "estimation.h"
 #include "stats.h"
 
 int main() {
 
+  auto start = std::chrono::steady_clock::now();
+  
   using Eigen::MatrixXd;
   typedef Eigen::Matrix<std::complex<double>,
   			Eigen::Dynamic,
   			Eigen::Dynamic> MatrixXc;
 
     // ======= Test parameter ===============================
-  int M = 10;  // Number of purity parameters x to try
+  int M = 2000;  // Number of purity parameters x to try
   double x_start = 0; // Specify purity parameter x range
   double x_end = 1;
   int N = 500;  // Number of random density matrices per x value
@@ -86,8 +91,8 @@ int main() {
   // simulate for each density matrix 
   // ======================================================
 
-  float av_distance[M][3];
-  int non_physical[M];
+  //float av_distance[M][3];
+  double non_physical[M];
 
   // Preliminaries: compute the projectors
   MatrixXc I(2,2); I << 1, 0, 0, 1;
@@ -103,11 +108,20 @@ int main() {
   std::ofstream file;
   file.open("linear_test_1_cpp.dat");
   file << "Distances between estimated and "
-       << "original density matrices using various distances:"
+       << "original density matrices using various distances."
+       << "Go to the end of the file for the running time."
        << std::endl << std::endl;
-  
-  file << "PURITY, \tOPERATOR, \tTRACE, \t\tFIDELITY, \tNON PHYSICAL"
+
+  // Write the simulation parameters
+  file << "Number of purity values tried = "
+       << M << std::endl
+       << "Number of density matrices per purity parameter = "
+       << N << std::endl
+       << "Total number of measurements for each of X, Y and Z = "
+       << S << std::endl
        << std::endl;
+  
+  file << "PURITY, \tOPERATOR, \tTRACE, \t\tFIDELITY, \tNON PHYSICAL";
   // Set precision
   file << std::fixed << std::setprecision(5) << std::endl;
   
@@ -213,16 +227,16 @@ int main() {
   //
 
   // Variables to store the estimation error distances
-  float dist_op[N];
-  float dist_trace[N];
-  float dist_fid[N];
+  double dist_op[N];
+  double dist_trace[N];
+  double dist_fid[N];
 
-  int dp = 5; // Decimal places for printing
+  //int dp = 5; // Decimal places for printing
   double x = 0; // Purity parameter
   
   for(int k=0; k<M; k++) {
     // Temporary counter for non-physical estimates
-    int non_physical_count = 0;				
+    double non_physical_count = 0;				
     
     // Loop N times for each value of x ------ inner loop -- N trials for each x
     //
@@ -273,8 +287,8 @@ int main() {
       double Y_data[S];
       double Z_data[S];
       simulate(dens, proj_X, outcomes_X, S, X_data);
-      simulate(dens, proj_Y, outcomes_X, S, Y_data);
-      simulate(dens, proj_Z, outcomes_X, S, Z_data);
+      simulate(dens, proj_Y, outcomes_Y, S, Y_data);
+      simulate(dens, proj_Z, outcomes_Z, S, Z_data);
 
 #ifdef DEBUG
 #ifdef DEBUG_PRINT_MEASUREMENTS
@@ -293,6 +307,12 @@ int main() {
       //
       MatrixXc dens_est = linear_estimate_XYZ(X_data, Y_data, Z_data, S);
 
+#ifdef DEBUG
+#ifdef DEBUG_PRINT_ESTIMATE
+      std::cout << dens_est << "This is the estimate"
+		<< std::endl << std::endl;
+#endif
+#endif
       // Step 4: Compute and the distances
       //
       // Compute distances between the estimated
@@ -306,8 +326,15 @@ int main() {
       //
       Eigen::SelfAdjointEigenSolver<MatrixXc> eigenD(dens_est);
       if(eigenD.info() != Eigen::Success) abort();
-      
-      if (eigenD.eigenvalues()[0] < 0 || eigenD.eigenvalues()[1] < 0) {
+
+#ifdef DEBUG
+#ifdef DEBUG_PRINT_ESTIMATES_EIGENVALUES
+      std::cout << "The estimated eigenvalues are "
+		<< eigenD.eigenvalues()
+		<< std::endl;
+#endif
+#endif
+      if ((eigenD.eigenvalues()[0] < 0) || (eigenD.eigenvalues()[1] < 0)) {
 	non_physical_count = non_physical_count + 1;
       }
       
@@ -315,28 +342,43 @@ int main() {
 
     // Step 5: Average the distances 
     //
-    // Average the distances for each value of x
+    // Average the distances for each value of x. There are N density
+    // matrices for each value of X, and consequently N distances to
+    // compute. Therefore the mean is computed over N points.
     //
     double tmp_op(0), tmp_trace(0), tmp_fid(0);
-    for(int k=0; k<S; k++) {
+    for(int k=0; k<N; k++) {
       tmp_op += dist_op[k];
       tmp_trace += dist_trace[k];
       tmp_fid += dist_fid[k];
     }
-    double mean_op = tmp_op/S;
-    double mean_trace = tmp_trace/S;
-    double mean_fid = tmp_fid/S;
-    av_distance[k][0] = mean_op;
-    av_distance[k][1] = mean_trace;
-    av_distance[k][2] = mean_fid;
+    double mean_op = tmp_op/N;
+    double mean_trace = tmp_trace/N;
+    double mean_fid = tmp_fid/N;
+    //av_distance[k][0] = mean_op;
+    //av_distance[k][1] = mean_trace;
+    //av_distance[k][2] = mean_fid;
     non_physical[k] = non_physical_count/N;
 
     file << x << ",\t"
 	 << mean_op << ",\t"
 	 << mean_trace << ",\t"
 	 << mean_fid << ",\t"
-	 << non_physical[k] << "\n";
+	 << non_physical[k]
+	 << std::endl;
     
   } // end of outer loop (looping through different purities)
+
+  // Get stop time
+  auto end = std::chrono::steady_clock::now();
+  auto time = end - start;
+
+  auto dur = std::chrono::duration_cast<std::chrono::milliseconds>(time).count();
+  
+  // Store the running time
+  file << std::endl
+       << "Total running time = "
+       << dur << "ms" << std::endl;
+    
   file.close();
 }

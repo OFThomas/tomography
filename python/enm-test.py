@@ -81,7 +81,7 @@ S = 500  # Number of samples of each measurement to
 # ======================================================
 
 av_distances = np.zeros([M,3])
-non_physical = np.zeros([M,1]) # Proportion of non-physical estimates
+non_physical = np.zeros(M) # Proportion of non-physical estimates
 
 # Preliminaries: compute the projectors
 

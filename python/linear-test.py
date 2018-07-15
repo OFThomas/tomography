@@ -1,54 +1,15 @@
 #!/usr/local/bin/python3
 #############################################################
-# Title: Testing the linear estimator
+# Title: Plot simulation data
 #
 # Date created: 19th June 2018
 #
 # Language:    Python 3
 #
-# Overview:    The point of this program is to test the
-#              reliability of the linear estimator for
-#              density matrices with different levels of
-#              purity. 
+# Overview:    The program takes in a data file containing
+#              simulation data and plots it. 
 #
 # Details:     The script performs the following steps:
-#
-#              1) Set x in [0,1] as the purity parameter;
-#                 pick a random unitary U; and compute
-#
-#
-#                          -       -
-#                         | x     0 |
-#                 p = U * |         | * U^
-#                         | 0   1-x |
-#                          -       -
-#
-#                 The closer x is to 1 or 0, the more
-#                 pure is the state.
-#
-#
-#              2) Fix a set of measurement operators,
-#                 and generate sample data from the
-#                 distribution of outcomes implied by
-#                 the state p.
-#
-#              3) Compute the density matrix using the
-#                 linear estimator.
-#
-#              4) Compute the distance between the
-#                 estimate and the true density matrix
-#                 for each of the different distances
-#                 (operator norm, Hilbert-Schmidt norm,
-#                 fidelity).
-#
-#              5) Perform averages of each distance at each
-#                 value of x. Plot the average distances
-#                 as a function of x for all the values of
-#                 x.
-#
-#              6) Repeat steps 1-4 for different values
-#                 of x and repeat each value of x a large
-#                 number of times. Store all the distances.
 #
 # Usage: python3 linear-test.py
 #
@@ -65,18 +26,17 @@ import estimation
 importlib.reload(estimation)
 import stats
 importlib.reload(stats)
-import matplotlib.pyplot as plt
 import estimation
 importlib.reload(estimation)
-from matplotlib.offsetbox import AnchoredText
 import cProfile
 import pstats
+from progress import *
 
 pr = cProfile.Profile()
 pr.enable()
 
 # ======= Test parameter ===============================
-M = 10  # Number of purity parameters x to try
+M = 2000  # Number of purity parameters x to try
 x_start = 0 # Specify purity parameter x range
 x_end = 1
 N = 500  # Number of random density matrices per x value
@@ -85,7 +45,7 @@ S = 500  # Number of samples of each measurement to
 # ======================================================
 
 av_distances = np.zeros([M,3])
-non_physical = np.zeros([M,1]) # Proportion of non-physical estimates
+non_physical = np.zeros(M) # Proportion of non-physical estimates
 
 # Preliminaries: compute the projectors
 
@@ -108,6 +68,14 @@ values_Z, vectors_Z = np.linalg.eig(Z)
 proj_Z = np.zeros([2,2,2])
 proj_Z[0,:,:] = np.matmul(vectors_Z[:,0], np.matrix.getH(vectors_Z[:,0]))
 proj_Z[1,:,:] = np.matmul(vectors_Z[:,1], np.matrix.getH(vectors_Z[:,1]))
+
+# Open a file for writing
+file = open("linear_test_1_python.dat", "w")
+file.write("Distances between estimated and original density matrices using various distances:\n\n")
+file.write("Number of purity values tried = "+str(M)+"\n")
+file.write("Number of density matrices per purity parameter = "+str(N)+"\n")
+file.write("Total number of measurements for each of X, Y and Z = "+str(S)+"\n\n");
+file.write("PURITY, \tOPERATOR, \tTRACE, \t\tFIDELITY, \tNON PHYSICAL\n")
 
 # Define x -- put a loop here ----------------------------------------- LOOP for x between 0 and 1
 #
@@ -191,13 +159,27 @@ for k in range(M):
     #
     # Average the distances for each value of x
     #
-    print(eigenvalues[0])
     av_distances[k,:] = [np.mean(dist_op), np.mean(dist_trace), np.mean(dist_fid)]
     non_physical[k] = non_physical_count/N
+    p = (k+1)/M
+    show_progress(pr,p)
+    file.write("{0:.5f},\t{1:.5f},\t{2:.5f}, \t{3:.5f}, \t{4:.5f}\n".format(x, np.mean(dist_op),
+                                                                            np.mean(dist_trace),
+                                                                            np.mean(dist_fid),
+                                                                            non_physical[k]))
 
-exit()
-    
+
 pr.disable()
+ps = pstats.Stats(pr)
+total_time = ps.total_tt
+
+file.write("\nTotal running time = "+str(np.around(total_time,3))+"s\n")    
+file.close
+
+
+
+'''-
+
 pr.create_stats()
 
 ps = pstats.Stats(pr)
@@ -229,3 +211,5 @@ ax2.add_artist(atext)
 
 fig.tight_layout()
 plt.show()
+
+'''
