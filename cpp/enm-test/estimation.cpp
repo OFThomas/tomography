@@ -57,18 +57,32 @@ MatrixXc linear_estimate_XYZ(double X_data[],
   MatrixXc Z(2,2); Z << 1, 0, 0, -1;
 
   // Compute means
-  double tmpX(0), tmpY(0), tmpZ(0);
-  for(int k=0; k<S; k++) {
-    tmpX += X_data[k];
-    tmpY += Y_data[k];
-    tmpZ += Z_data[k];
-  }
-  double mean_X = tmpX/S;
-  double mean_Y = tmpY/S;
-  double mean_Z = tmpZ/S;
-
+  double mean_X = mean(X_data, S);
+  double mean_Y = mean(Y_data, S);
+  double mean_Z = mean(Z_data, S);
+  
+#ifdef DEBUG
+#ifdef DEBUG_PRINT_MEANS
+  std::cout << std::endl
+	    << "X mean: " << mean_X << std::endl
+	    << "Y mean: " << mean_Y << std::endl
+	    << "Z mean: " << mean_Z << std::endl
+	    << std::endl;
+  
+#endif
+#endif
+  
   // Reconstruct density matrix
   MatrixXc dens_est = (mean_X * X + mean_Y * Y + mean_Z * Z + I)/2;
+
+#ifdef DEBUG
+#ifdef DEBUG_PRINT_ESTIMATE
+  std::cout << "The estimated density matrix is"
+	    << std::endl << std::endl
+	    << dens_est
+	    << std::endl << std::endl;
+#endif
+#endif
   
   return dens_est;
 }

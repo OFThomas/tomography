@@ -1,0 +1,19 @@
+# Contains a function for printing progress
+
+import cProfile
+import pstats
+import numpy as np
+
+# p = proportion done
+# pr is a profiling object
+def show_progress(pr, p):
+    rem = "?"
+    pr.disable()
+    pr.create_stats()
+    ps = pstats.Stats(pr)
+    t = ps.total_tt
+    pr.enable()
+    if(p != 0) : rem = str(np.around(t/p-t,2))+"s"
+    print("Percent done:", str(np.around(100*p,2))+"%",
+          "\tTotal time =",str(np.around(t,1))+"s",
+          "\tEstimated time remaining:",rem)

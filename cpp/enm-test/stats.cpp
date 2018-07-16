@@ -27,6 +27,13 @@ double distance_op(MatrixXc A, MatrixXc B) {
   Eigen::JacobiSVD<MatrixXc> svd(A-B, Eigen::ComputeThinU | Eigen::ComputeThinV);
   // The first singular value is the largest
   double distance = svd.singularValues()[0];
+
+#ifdef DEBUG
+#ifdef DEBUG_PRINT_DISTANCES
+  std::cout << "The operator distance is: " << distance << std::endl;
+#endif
+#endif
+  
   return distance;
 }
 
@@ -39,6 +46,13 @@ double distance_op(MatrixXc A, MatrixXc B) {
 //
 double distance_trace(MatrixXc A, MatrixXc B){
   double distance = (A - B).norm();
+
+#ifdef DEBUG
+#ifdef DEBUG_PRINT_DISTANCES
+  std::cout << "The trace distance is: " << distance << std::endl;
+#endif
+#endif
+  
   return distance;
 }
 
@@ -74,6 +88,12 @@ double distance_fid(const MatrixXc A, const MatrixXc B) {
   double fidelity = std::sqrt(std::abs(eigenD.eigenvalues()[0]))
     + std::sqrt(std::abs(eigenD.eigenvalues()[0])); 
   double distance = std::acos(fidelity);
+
+#ifdef DEBUG
+#ifdef DEBUG_PRINT_DISTANCES
+  std::cout << "The fidelity distance is: " << distance << std::endl;
+#endif
+#endif
   
   return distance;
 
@@ -91,5 +111,25 @@ double distance_fid_2(const MatrixXc A, const MatrixXc B) {
   MatrixXc D = eigenCBC.operatorSqrt();
   double fidelity = std::real(D.trace());
   double distance = std::acos(fidelity);
+
+#ifdef DEBUG
+#ifdef DEBUG_PRINT_DISTANCES
+  std::cout << "The fidelity distance is: " << distance << std::endl;
+#endif
+#endif
+  
   return distance;
+}
+
+// Mean calcluator
+//
+// Compute the mean of an array
+//
+double mean(double array[], int N) {
+  
+  double tmp(0);
+  for(int n=0; n<N; n++) tmp += array[n];
+  double mean = tmp/N;
+  return mean;
+
 }

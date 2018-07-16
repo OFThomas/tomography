@@ -13,6 +13,8 @@
 *
 ************************************************************/
 
+#define DEBUG_PRINT_DISTANCES
+
 #include "iostream"
 #include "Eigen/Dense"
 #include "Eigen/SVD"
@@ -59,3 +61,8 @@ double distance_trace(MatrixXc A, MatrixXc B);
 double distance_fid(const MatrixXc A, const MatrixXc B);
 double distance_fid_2(const MatrixXc A, const MatrixXc B);
 
+// Mean calcluator
+//
+// Compute the mean of an array
+//
+double mean(double array[], int N);

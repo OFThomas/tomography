@@ -13,6 +13,11 @@
 *
 ************************************************************/
 
+#define DEBUG_PRINT_MEANS
+#define DEBUG_PRINT_ESTIMATE
+
+#include <iostream>
+#include "stats.h"
 #include "Eigen/Dense"
 
 typedef Eigen::Matrix<std::complex<double>,
