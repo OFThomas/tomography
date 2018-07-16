@@ -37,12 +37,15 @@ pr.enable()
 
 # ======= Test parameter ===============================
 M = 2000  # Number of purity parameters x to try
-x_start = 0 # Specify purity parameter x range
+x_start = 0.005 # Specify purity parameter x range
 x_end = 1
 N = 500  # Number of random density matrices per x value
 S = 500  # Number of samples of each measurement to
          # simulate for each density matrix 
 # ======================================================
+
+# Seed random number generator
+np.random.seed()
 
 av_distances = np.zeros([M,3])
 non_physical = np.zeros(M) # Proportion of non-physical estimates

@@ -1,10 +1,10 @@
 CC = g++
 CFLAGS = -std=c++11 -O3 -c -I../ 
 LFLAGS = -std=c++11 -O3 -I../
-
+BINARY = enm-test
 
 enm-test: enm-test.o simulation.o estimation.o stats.o proj.o enm-test.h
-	$(CC) $(LFLAGS) -o enm-test enm-test.o simulation.o estimation.o stats.o proj.o
+	$(CC) $(LFLAGS) -o $(BINARY) enm-test.o simulation.o estimation.o stats.o proj.o
 
 enm-test.o: enm-test.cpp simulation.h 
 	$(CC) $(CFLAGS) enm-test.cpp
@@ -20,3 +20,6 @@ stats.o: stats.cpp stats.h
 
 proj.o: proj.cpp proj.h
 	$(CC) $(CFLAGS) proj.cpp
+
+clean:
+	rm -f $(BINARY) *.o 

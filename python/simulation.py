@@ -39,7 +39,7 @@ def random_density(x):
     U_dag = np.matrix.getH(np.asmatrix(U))
     diag = [[x,0],[0,1-x]]
     dens = np.matmul(np.matmul(U, diag), U_dag)
-    return dens
+    return diag
 
 # Function: density(dp)
 #

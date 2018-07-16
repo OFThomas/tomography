@@ -58,7 +58,25 @@ int main() {
 
   // Start the clock!
   auto start = std::chrono::steady_clock::now();
- 
+
+
+  // Step 0: Seed the random number generators
+  //
+  // The random engine is initialised outside the main program
+  // This is so that the engine is only initialised once,
+  // as opposed to every time the simulate function is
+  // called. That way each set of measurements is independent
+  // of the others. In fact, it is critical that it is passed
+  // by reference -- otherwise the object gets copied and
+  // you get the same problem. If the generator is passed
+  // by reference, the same object is used by all the
+  // random number generators.
+  //
+  unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+  srand(seed);
+  std::mt19937 gen;
+  gen.seed(seed);
+
   // ======= Test parameter ===============================
   int M = 2000;  // Number of purity parameters x to try
   double x_start = 0; // Specify purity parameter x range
@@ -158,19 +176,19 @@ int main() {
       // to keep using the dp variable.
       //
       x = x_start + k * (x_end - x_start)/M;
-      MatrixXc dens = random_density(x);
-      //MatrixXc dens(2,2); dens << 1,0,0,0;
+      //MatrixXc dens = random_density(x, gen);
+      MatrixXc dens(2,2); dens << x,0,0,1-x;
       
       // Step 2: Generate measurement data
       //
-      // Generate data for X, Y and Z measurements
+      // Generate data for X, Y and Z measurements. 
       //
       double X_data[S]; // To contain the (real) measurement values
       double Y_data[S];
       double Z_data[S];
-      simulate(dens, proj_X, outcomes_X, S, X_data);
-      simulate(dens, proj_Y, outcomes_Y, S, Y_data);
-      simulate(dens, proj_Z, outcomes_Z, S, Z_data);
+      simulate(dens, proj_X, outcomes_X, S, X_data, gen);
+      simulate(dens, proj_Y, outcomes_Y, S, Y_data, gen);
+      simulate(dens, proj_Z, outcomes_Z, S, Z_data, gen);
       
       // Step 3: Estimate density matrix
       //

@@ -15,6 +15,7 @@
 *
 ************************************************************/
 
+
 #define DEBUG_PRINT_RANDOM_DENSITY
 //#define DEBUG_PRINT_PROBABILITY
 //#define DEBUG_PRINT_DIAG
@@ -29,9 +30,22 @@
 #include <random> 
 #include "Eigen/Dense"
 
+#define _USE_MATH_DEFINES
+#include <cmath>
+
 typedef Eigen::Matrix<std::complex<double>,
 		      Eigen::Dynamic,
 		      Eigen::Dynamic> MatrixXc;
+
+// Function: Generate random unitary
+//
+// The method is to parametrise the unitary
+// group and then select the right distribution
+// for the parameters. See '2009 Ozols - How to
+// generate a random unitary matrix', page 5, for
+// more details.
+//
+MatrixXc random_unitary(std::mt19937 & generator);
 
 // Function: random_density(x)
 //
@@ -46,7 +60,7 @@ typedef Eigen::Matrix<std::complex<double>,
 //  complex matrix and do a QR decomposition
 //  than use the random unitary function.
 //
-MatrixXc random_density(double x);
+MatrixXc random_density(double x, std::mt19937 & generator);
 
 // Function: simulate()
 //
@@ -60,5 +74,14 @@ MatrixXc random_density(double x);
 //  measurement simulations is passed
 //  by reference.
 //
+//  Note that the random number
+//  generator in the last argument
+//  must be passed by reference.
+//  Otherwise a copy gets made and
+//  the random numbers from different
+//  calls will end up dependent on each
+//  other
+//
 int simulate(MatrixXc dens, const MatrixXc proj[],
-	     const double meas[],int S, double sim_dat[]);
+	     const double meas[],int S, double sim_dat[],
+	     std::mt19937 & generator);
