@@ -79,7 +79,6 @@ import importlib
 import numpy as np
 from scipy.stats import unitary_group as ug
 import scipy as sc
-from input import get_user_value
 
 ################
 ## SIMULATION ##
@@ -102,10 +101,14 @@ import simulation
 importlib.reload(simulation)
 x = np.random.uniform(0,1) # Generate x
 print("Picked eigenvalues:\n\n\t ",x,",",1-x)
+<<<<<<< HEAD:python/state-tomography.py
 dens = simulation.random_density(x)
 #dens = np.array([[1,0],[0,0]])
 print("\nThe random density matrix is\n\n")
 print(dens)
+=======
+dens = simulation.density(x,dp)
+>>>>>>> parent of 3f58dfa... Tested simulation again:state-tomography.py
     
 # Step 2: Generate measurement data
 #
@@ -142,8 +145,12 @@ print("prob = tr(pP), where p is the density")
 print("matrix. Then samples are taken from")
 print("a discrete distribution defined by the")
 print("measurement probabilities. The process")
-print("is repeated for Y and Z.")
+print("is repeated for Y and Z.\n")
+# User overwrite argument: select number of measurements
+samples = get_user_value("\nChoose the number of measurements in each basis","integer")  
+sim_dat = simulation.simulate(dens,meas_ops,samples)
 
+<<<<<<< HEAD:python/state-tomography.py
 # Preliminaries: compute the projectors
 
 I = np.matrix([[1,0],[0,1]])
@@ -177,6 +184,13 @@ S = get_user_value("\nChoose the number of measurements in each basis","integer"
 X_data = simulation.simulate(dens,proj_X,values_X,S)
 Y_data = simulation.simulate(dens,proj_Y,values_Y,S)
 Z_data = simulation.simulate(dens,proj_Z,values_Z,S)
+=======
+for meas in sim_dat['probabilities']: # Measurement operator
+    for outcome in sim_dat['probabilities'][meas]: # Measurement outcome
+        print("The probability of getting",np.around(outcome,dp),
+              "from measurement",meas,"is",
+              np.around(sim_dat['probabilities'][meas][outcome],dp))
+>>>>>>> parent of 3f58dfa... Tested simulation again:state-tomography.py
 
 ################
 ## ESTIMATION ##
@@ -193,8 +207,12 @@ Z_data = simulation.simulate(dens,proj_Z,values_Z,S)
 #
 import estimation
 importlib.reload(estimation)
+<<<<<<< HEAD:python/state-tomography.py
 proj = np.concatenate((proj_X, proj_Y, proj_Z), axis=0)
 dens_est = estimation.enm_XYZ(X_data, Y_data, Z_data)[0]
+=======
+dens_est = estimation.linear_estimate_XYZ(sim_dat)
+>>>>>>> parent of 3f58dfa... Tested simulation again:state-tomography.py
 
 print("The estimate for p is:\n\n",dens_est,"\n")
 print("The original density matrix was:\n\n", dens,"\n")
@@ -235,7 +253,7 @@ print("The original density matrix was:\n\n", dens,"\n")
 #
 from stats import * 
 print("======================= Summary statistics =======================\n")
-print("The number of simulated samples for each measurement was\u001b[36m",X_data.size,"\u001b[37m\n")
+print("The number of simulated samples for each measurement was\u001b[36m",sim_dat['data']["X"].size,"\u001b[37m\n")
 variances = {}
 # Get the purity of the density matrix estimate
 eigenvalues, eigenvectors = np.linalg.eig(dens_est)
@@ -247,13 +265,10 @@ print("\nThe purity parameter of the estimated density matrix is",
       np.maximum(np.around(eigenvalues.real[0],dp),
       np.around(eigenvalues.real[1],dp)))
 print("\nThe variances in the simulated data are:\n")
-
-print("\tThe variance in the X samples was",np.var(X_data))
-print("\tThe variance in the Y samples was",np.var(Y_data))
-print("\tThe variance in the Z samples was",np.var(Z_data))
-
+for key in meas_dat :
+    variances[key] = np.var(meas_dat[key])
+    print("\tThe variance in the",key,"samples was",variances[key])
 print("\nDistances between the original density matrix and the estimate:")
-print("\n\tIn the operator norm:\t\t", distance_op(dens, dens_est))
-print("\tIn the Hilbert Schmidt norm:\t",distance_trace(dens, dens_est))
-print("\tFidelity distance:\t\t",distance_fid(dens, dens_est))
-print()
+print("\n\tIn the operator norm:\t\t", distance(dens, dens_est, 'operator'))
+print("\tIn the Hilbert Schmidt norm:\t",distance(dens, dens_est, 'trace'))
+print("\tFidelity distance:\t\t",distance(dens, dens_est, 'fidelity'))
