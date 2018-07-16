@@ -59,7 +59,14 @@ MatrixXc random_density(double x) {
   std::cout << diag << " This is the diagonal matrix\n" << std::endl;
 #endif
 #ifdef DEBUG_PRINT_RANDOM_DENSITY
-  std::cout << dens << " This is the density matrix\n" << std::endl;
+  std::cout << std::endl
+	    << "======================================"
+	    << "======================================"
+	    << std::endl
+	    << "The randomly generated density matrix is"
+	    << std::endl << std::endl
+	    << dens
+	    << std::endl << std::endl;
 #endif
 #endif
 
@@ -90,9 +97,12 @@ int simulate(MatrixXc dens, const MatrixXc proj[],
   
 #ifdef DEBUG
 #ifdef DEBUG_PRINT_PROBABILITY
-  std::cout << "Probability distribution for X:\n"
-	    << p[0] << ", "
-	    << p[1] << std::endl << std::endl;
+  std::cout << "Measurement probabilities:"
+	    << std::endl << std::endl
+	    << proj[0] << "   \tP = " << p[0]
+	    << std::endl << std::endl
+	    << proj[1] << "   \tP = " << p[1]
+	    << std::endl << std::endl;
 #endif
 #endif
 
@@ -116,6 +126,15 @@ int simulate(MatrixXc dens, const MatrixXc proj[],
       sim_dat[k] = std::real(meas[1]);
     }
   }
+
+#ifdef DEBUG
+#ifdef DEBUG_PRINT_MEASUREMENTS
+  std::cout << "Simulated measurements: ";
+  for(int k=0; k<S; k++) std::cout << sim_dat[k] << ", ";
+  std::cout << std::endl;
+#endif
+#endif
+  
   
   return 0;
   

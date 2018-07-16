@@ -52,39 +52,13 @@
 *
 *************************************************************/
 
-//#define DEBUG
-//#define DEBUG_PRINT_RANDOM_DENSITY
-//#define DEBUG_PRINT_PROBABILITY
-//#define DEBUG_PRINT_DIAG
-//#define DEBUG_PRINT_RANDOM
-//#define DEBUG_PRINT_MEASUREMENTS
-//#define DEBUG_PRINT_ESTIMATE
-//#define DEBUG_PRINT_ESTIMATES_EIGENVALUES
-//#define DEBUG_PRINT_EIGEN
-
-#include <iostream>
-#include <complex>
-#include <cstdlib>
-#include <ctime>
-#include <random> 
-#include <fstream>
-#include <iomanip>
-#include <chrono>
-#include "Eigen/Dense"
-#include "simulation.h"
-#include "estimation.h"
-#include "stats.h"
-#include "proj.h"
+#include "enm-test.h"
 
 int main() {
 
+  // Start the clock!
   auto start = std::chrono::steady_clock::now();
  
-  using Eigen::MatrixXd;
-  typedef Eigen::Matrix<std::complex<double>,
-  			Eigen::Dynamic,
-  			Eigen::Dynamic> MatrixXc;
-
   // ======= Test parameter ===============================
   int M = 2000;  // Number of purity parameters x to try
   double x_start = 0; // Specify purity parameter x range
@@ -94,9 +68,7 @@ int main() {
   // simulate for each density matrix 
   // ======================================================
 
-  //float av_distance[M][3];
   double non_physical[M];
-
 
   // Get an output file ready
   std::ofstream file;
@@ -137,58 +109,6 @@ int main() {
   make_projector(X, proj_X, outcomes_X);
   make_projector(Y, proj_Y, outcomes_Y);
   make_projector(Z, proj_Z, outcomes_Z);
-
-#ifdef DEBUG
-#ifdef DEBUG_PRINT_EIGEN
-  // Print all the eigenvalues and eigenvectors
-  std::cout << "\n======== PRINT EIGENVALUES AND EIGENVECTORS ===========\n\n";
-  std::cout << "The eigenvalues of X are\n"
-	    << eigenX.eigenvalues()
-	    << std::endl << std::endl;
-  std::cout << "This matrix contains columns which are the eigenvectors of X\n"
-	    << eigenX.eigenvectors()
-	    << std::endl << std::endl;
-  std::cout << "The eigenvalues of Y are\n"
-	    << eigenY.eigenvalues()
-	    << std::endl << std::endl;
-  std::cout << "This matrix contains columns which are the eigenvectors of Y\n"
-	    << eigenY.eigenvectors()
-	    << std::endl << std::endl;
-  std::cout << "The eigenvalues of Z are\n"
-	    << eigenZ.eigenvalues()
-	    << std::endl << std::endl;
-  std::cout << "This matrix contains columns which are the eigenvectors of Z\n"
-	    << eigenZ.eigenvectors()
-	    << std::endl << std::endl;
-
-  // Print all the projectors
-  std::cout << "\n============== PRINT PROJECTORS ==============\n\n";
-  std::cout << "The projector of X corresponding to outcome "
-	    << eigenX.eigenvalues()[0] << " is\n"
-	    << proj_X[0]
-	    << std::endl << std::endl;
-  std::cout << "The projector of X corresponding to outcome "
-	    << eigenX.eigenvalues()[1] << " is\n"
-	    << proj_X[1]
-	    << std::endl << std::endl;
-  std::cout << "The projector of Y corresponding to outcome "
-	    << eigenY.eigenvalues()[0] << " is\n"
-	    << proj_Y[0]
-	    << std::endl << std::endl;
-  std::cout << "The projector of Y corresponding to outcome "
-	    << eigenY.eigenvalues()[1] << " is\n"
-	    << proj_Y[1]
-	    << std::endl << std::endl;
-  std::cout << "The projector of Z corresponding to outcome "
-	    << eigenZ.eigenvalues()[0] << " is\n"
-	    << proj_Z[0]
-	    << std::endl << std::endl;
-  std::cout << "The projector of Z corresponding to outcome "
-	    << eigenZ.eigenvalues()[1] << " is\n"
-	    << proj_Z[1]
-	    << std::endl << std::endl;
-#endif
-#endif
   
   // Define x -- put a loop here ------------------- LOOP for x between 0 and 1
   //
@@ -205,8 +125,14 @@ int main() {
   double x = 0; // Purity parameter
   
   for(int k=0; k<M; k++) {
+#ifdef DEBUG
+    std::cout << "======================= "
+	      << "START OF AN X LOOP"
+	      << "======================="
+	      << std::endl;
+#endif
     // Temporary counter for non-physical estimates
-    double non_physical_count = 0;				
+    double non_physical_count = 0;
     
     // Loop N times for each value of x ------ inner loop -- N trials for each x
     //
@@ -214,6 +140,13 @@ int main() {
     // which used to simulate measurement data and run the estimator
     //
     for(int n=0; n<N; n++) {
+      #ifdef DEBUG
+      std::cout << std::endl
+		<< "++++++++ "
+		<< "FIXED DENSITY MATRIX "
+		<< "++++++++"
+		<< std::endl << std::endl;
+#endif
       // Step 1: Prepare the density matrix
       //
       // The purity parameter x is picked between 0
@@ -226,7 +159,8 @@ int main() {
       //
       x = x_start + k * (x_end - x_start)/M;
       MatrixXc dens = random_density(x);
-
+      //MatrixXc dens(2,2); dens << 1,0,0,0;
+      
       // Step 2: Generate measurement data
       //
       // Generate data for X, Y and Z measurements
@@ -237,14 +171,6 @@ int main() {
       simulate(dens, proj_X, outcomes_X, S, X_data);
       simulate(dens, proj_Y, outcomes_Y, S, Y_data);
       simulate(dens, proj_Z, outcomes_Z, S, Z_data);
-
-#ifdef DEBUG
-#ifdef DEBUG_PRINT_MEASUREMENTS
-      std::cout << "The simulated X values are:\n";
-      for(int k=0; k<S; k++) std::cout << X_data[k] << ", ";
-      std::cout << std::endl;
-#endif
-#endif
       
       // Step 3: Estimate density matrix
       //
@@ -255,12 +181,6 @@ int main() {
       //
       MatrixXc dens_est = linear_estimate_XYZ(X_data, Y_data, Z_data, S);
 
-#ifdef DEBUG
-#ifdef DEBUG_PRINT_ESTIMATE
-      std::cout << dens_est << "This is the estimate"
-		<< std::endl << std::endl;
-#endif
-#endif
       // Step 4: Compute and the distances
       //
       // Compute distances between the estimated
@@ -288,34 +208,43 @@ int main() {
       }
       
     } // end of inner loop (fixed purity, random density matrices)
-
+    
     // Step 5: Average the distances 
     //
     // Average the distances for each value of x. There are N density
     // matrices for each value of X, and consequently N distances to
     // compute. Therefore the mean is computed over N points.
     //
-    double tmp_op(0), tmp_trace(0), tmp_fid(0);
-    if(tmp_op != 0 || tmp_trace != 0 || tmp_fid != 0) abort();
-    for(int n=0; n<N; n++) {
-      tmp_op += dist_op[n];
-      tmp_trace += dist_trace[n];
-      tmp_fid += dist_fid[n];
-    }
-    double mean_op = tmp_op/N;
-    double mean_trace = tmp_trace/N;
-    double mean_fid = tmp_fid/N;
-    //av_distance[k][0] = mean_op;
-    //av_distance[k][1] = mean_trace;
-    //av_distance[k][2] = mean_fid;
+    double mean_op = mean(dist_op, N);
+    double mean_trace = mean(dist_trace, N);
+    double mean_fid = mean(dist_fid, N);
     non_physical[k] = non_physical_count/N;
 
+#ifdef DEBUG
+#ifdef DEBUG_PRINT_DISTANCE_AVERAGES
+    std::cout << std::endl
+	      << "The average operator distance is: " << mean_op << std::endl    
+	      << "The average trace distance is: " << mean_trace << std::endl
+	      << "The average fidelity distance is: " << mean_fid << std::endl;
+#endif
+#endif
+    
+    // Step 6: Write the results to a file
+    //
     file << x << ",\t"
 	 << mean_op << ",\t"
 	 << mean_trace << ",\t"
 	 << mean_fid << ",\t"
 	 << non_physical[k]
 	 << std::endl;
+
+#ifdef DEBUG
+    std::cout << std::endl
+	      << "++++++++ "
+	      << "END OF INNER LOOP "
+	      << "++++++++"
+	      << std::endl << std::endl;
+#endif
     
   } // end of outer loop (looping through different purities)
 
