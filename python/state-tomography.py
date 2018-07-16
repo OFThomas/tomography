@@ -102,10 +102,14 @@ importlib.reload(simulation)
 x = np.random.uniform(0,1) # Generate x
 print("Picked eigenvalues:\n\n\t ",x,",",1-x)
 <<<<<<< HEAD:python/state-tomography.py
+<<<<<<< HEAD:python/state-tomography.py
 dens = simulation.random_density(x)
 #dens = np.array([[1,0],[0,0]])
 print("\nThe random density matrix is\n\n")
 print(dens)
+=======
+dens = simulation.density(x,dp)
+>>>>>>> parent of 3f58dfa... Tested simulation again:state-tomography.py
 =======
 dens = simulation.density(x,dp)
 >>>>>>> parent of 3f58dfa... Tested simulation again:state-tomography.py
@@ -151,6 +155,7 @@ samples = get_user_value("\nChoose the number of measurements in each basis","in
 sim_dat = simulation.simulate(dens,meas_ops,samples)
 
 <<<<<<< HEAD:python/state-tomography.py
+<<<<<<< HEAD:python/state-tomography.py
 # Preliminaries: compute the projectors
 
 I = np.matrix([[1,0],[0,1]])
@@ -185,11 +190,16 @@ X_data = simulation.simulate(dens,proj_X,values_X,S)
 Y_data = simulation.simulate(dens,proj_Y,values_Y,S)
 Z_data = simulation.simulate(dens,proj_Z,values_Z,S)
 =======
+=======
+>>>>>>> parent of 3f58dfa... Tested simulation again:state-tomography.py
 for meas in sim_dat['probabilities']: # Measurement operator
     for outcome in sim_dat['probabilities'][meas]: # Measurement outcome
         print("The probability of getting",np.around(outcome,dp),
               "from measurement",meas,"is",
               np.around(sim_dat['probabilities'][meas][outcome],dp))
+<<<<<<< HEAD:python/state-tomography.py
+>>>>>>> parent of 3f58dfa... Tested simulation again:state-tomography.py
+=======
 >>>>>>> parent of 3f58dfa... Tested simulation again:state-tomography.py
 
 ################
@@ -208,8 +218,12 @@ for meas in sim_dat['probabilities']: # Measurement operator
 import estimation
 importlib.reload(estimation)
 <<<<<<< HEAD:python/state-tomography.py
+<<<<<<< HEAD:python/state-tomography.py
 proj = np.concatenate((proj_X, proj_Y, proj_Z), axis=0)
 dens_est = estimation.enm_XYZ(X_data, Y_data, Z_data)[0]
+=======
+dens_est = estimation.linear_estimate_XYZ(sim_dat)
+>>>>>>> parent of 3f58dfa... Tested simulation again:state-tomography.py
 =======
 dens_est = estimation.linear_estimate_XYZ(sim_dat)
 >>>>>>> parent of 3f58dfa... Tested simulation again:state-tomography.py
