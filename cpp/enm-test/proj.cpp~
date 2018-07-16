@@ -1,0 +1,16 @@
+/************************************************************
+* Title: Projectors and measurement operators
+*
+* Date created: 14th July 2018
+*
+* Language: Cpp
+*
+* Overview: This file contains various functions for
+*           generating simulated states and measurement
+*           data. 
+*
+* Details: source
+*
+* Usage: Include the header file
+*
+************************************************************/

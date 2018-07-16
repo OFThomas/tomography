@@ -2,8 +2,8 @@ CC = g++
 CFLAGS = -std=c++11 -O3 -c -I../
 LFLAGS = -std=c++11 -O3 -I../
 
-enm-test: enm-test.o simulation.o estimation.o stats.o
-	$(CC) $(LFLAGS) -o enm-test enm-test.o simulation.o estimation.o stats.o
+enm-test: enm-test.o simulation.o estimation.o stats.o proj.o
+	$(CC) $(LFLAGS) -o enm-test enm-test.o simulation.o estimation.o stats.o proj.o
 
 enm-test.o: enm-test.cpp simulation.h 
 	$(CC) $(CFLAGS) enm-test.cpp
@@ -16,3 +16,6 @@ estimation.o: estimation.cpp estimation.h
 
 stats.o: stats.cpp stats.h
 	$(CC) $(CFLAGS) stats.cpp
+
+proj.o: proj.cpp proj.h
+	$(CC) $(CFLAGS) proj.cpp

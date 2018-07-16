@@ -70,20 +70,22 @@
 #include <fstream>
 #include <iomanip>
 #include <chrono>
+#include "Eigen/Dense"
 #include "simulation.h"
 #include "estimation.h"
 #include "stats.h"
+#include "proj.h"
 
 int main() {
 
   auto start = std::chrono::steady_clock::now();
-  
+ 
   using Eigen::MatrixXd;
   typedef Eigen::Matrix<std::complex<double>,
   			Eigen::Dynamic,
   			Eigen::Dynamic> MatrixXc;
 
-    // ======= Test parameter ===============================
+  // ======= Test parameter ===============================
   int M = 2000;  // Number of purity parameters x to try
   double x_start = 0; // Specify purity parameter x range
   double x_end = 1;
@@ -95,12 +97,6 @@ int main() {
   //float av_distance[M][3];
   double non_physical[M];
 
-  // Preliminaries: compute the projectors
-  MatrixXc I(2,2); I << 1, 0, 0, 1;
-  MatrixXc X(2,2); X << 0, 1, 1, 0;
-  MatrixXc Y(2,2); Y << 0, std::complex<double>(0,-1),
-		     std::complex<double>(0,1), 0;
-  MatrixXc Z(2,2); Z << 1, 0, 0, -1;
 
   // Get an output file ready
   std::ofstream file;
@@ -122,18 +118,15 @@ int main() {
   file << "PURITY, \tOPERATOR, \tTRACE, \t\tFIDELITY, \tNON PHYSICAL";
   // Set precision
   file << std::fixed << std::setprecision(5) << std::endl;
-  
-#ifdef DEBUG
-#ifdef DEBUG_PRINT_IXYZ
-  std::cout << "\n============== DEFINE X, Y AND Z ==============\n\n"; 
-  std::cout << I << " This is I" << std::endl << std::endl;
-  std::cout << X << " This is X" << std::endl << std::endl;
-  std::cout << Y << " This is Y" << std::endl << std::endl;
-  std::cout << Z << " This is Z" << std::endl << std::endl;
-#endif
-#endif
 
-  MatrixXc vectors;
+  // Preliminaries: define measurement operators
+  MatrixXc I(2,2); I << 1, 0, 0, 1;
+  MatrixXc X(2,2); X << 0, 1, 1, 0;
+  MatrixXc Y(2,2); Y << 0, std::complex<double>(0,-1),
+		     std::complex<double>(0,1), 0;
+  MatrixXc Z(2,2); Z << 1, 0, 0, -1;
+
+  // Compute the projectors
   MatrixXc proj_X[2];
   MatrixXc proj_Y[2];
   MatrixXc proj_Z[2];
@@ -141,31 +134,10 @@ int main() {
   double outcomes_Y[2];
   double outcomes_Z[2];
   
-  // Compute eigenvectors and eigenvalues of X, Y and Z
-  Eigen::SelfAdjointEigenSolver<MatrixXc> eigenX(X);
-  if(eigenX.info() != Eigen::Success) abort();
-  Eigen::SelfAdjointEigenSolver<MatrixXc> eigenY(Y);
-  if(eigenY.info() != Eigen::Success) abort();
-  Eigen::SelfAdjointEigenSolver<MatrixXc> eigenZ(Z);
-  if(eigenZ.info() != Eigen::Success) abort();
+  make_projector(X, proj_X, outcomes_X);
+  make_projector(Y, proj_Y, outcomes_Y);
+  make_projector(Z, proj_Z, outcomes_Z);
 
-  // Compute all the projectors and store outcomes
-  vectors = eigenX.eigenvectors();
-  proj_X[0] = vectors.col(0) * vectors.col(0).adjoint();
-  proj_X[1] = vectors.col(1) * vectors.col(1).adjoint();
-  outcomes_X[0] = eigenX.eigenvalues()[0];
-  outcomes_X[1] = eigenX.eigenvalues()[1];
-  vectors = eigenY.eigenvectors();
-  proj_Y[0] = vectors.col(0) * vectors.col(0).adjoint();
-  proj_Y[1] = vectors.col(1) * vectors.col(1).adjoint();
-  outcomes_Y[0] = eigenY.eigenvalues()[0];
-  outcomes_Y[1] = eigenY.eigenvalues()[1];
-  vectors = eigenZ.eigenvectors();
-  proj_Z[0] = vectors.col(0) * vectors.col(0).adjoint();
-  proj_Z[1] = vectors.col(1) * vectors.col(1).adjoint();
-  outcomes_Z[0] = eigenZ.eigenvalues()[0];
-  outcomes_Z[1] = eigenZ.eigenvalues()[1];
-  
 #ifdef DEBUG
 #ifdef DEBUG_PRINT_EIGEN
   // Print all the eigenvalues and eigenvectors

@@ -1,0 +1,24 @@
+/************************************************************
+* Title: Projectors and measurement operators
+*
+* Date created: 14th July 2018
+*
+* Language: Cpp
+*
+* Overview: This file contains various functions for
+*           generating measurement projectors given
+*           Hermitian operators
+*
+* Details: header
+*
+* Usage: Include the header file
+*
+************************************************************/
+
+#include "Eigen/Dense"
+
+typedef Eigen::Matrix<std::complex<double>,
+		      Eigen::Dynamic,
+		      Eigen::Dynamic> MatrixXc;
+
+
