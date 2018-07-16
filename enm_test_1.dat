@@ -1,0 +1,8 @@
+Distances between estimated and original density matrices using various distances:
+
+OPERATOR, 		TRACE, 	FIDELITY
+0.34491,		0.45311,	0.27072
+0.38694,		0.51476,	0.42691
+0.33468,		0.47331,	0.38166
+0.38248,		0.52851,	0.42756
+0.35527,		0.49697,	0.45459

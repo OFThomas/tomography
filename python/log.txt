@@ -1,0 +1,605 @@
+commit 576f0c226d7bccda61d34fc5dfefcda369ea896a
+Author: John Scott <johnrscott0@gmail.com>
+Date:   Sun Jul 15 23:36:50 2018 +0100
+
+    Fixed some errors -- implemented a new fidelity function
+
+commit 13b9695d66d6a23d72d3c239c535a97845886ebd
+Author: John Scott <johnrscott0@gmail.com>
+Date:   Sun Jul 15 16:26:47 2018 +0100
+
+    Debugging cpp
+
+commit a6058c0d47f4531d6efb6757af735ea314391a88
+Author: John Scott <johnrscott0@gmail.com>
+Date:   Sat Jul 14 22:50:58 2018 +0100
+
+    Performed first comparison between python and cpp
+
+commit 29fb06cba786ca893bdb0cb68e64c0e9eeb33251
+Author: John Scott <johnrscott0@gmail.com>
+Date:   Sat Jul 14 18:55:39 2018 +0100
+
+    Continued adding to Cpp. All needs testing
+
+commit f825b7c899e1194c8d247a49b16fcafda479227b
+Author: John Scott <johnrscott0@gmail.com>
+Date:   Sat Jul 14 12:08:58 2018 +0100
+
+    Started work on a new Cpp implementation
+
+commit 25aa64561d6642310c35bfa30c8c399836b4cb27
+Author: John Scott <johnrscott0@gmail.com>
+Date:   Sat Jul 14 09:45:25 2018 +0100
+
+    Added some data and reorganised folders
+
+commit 640988a6ac737092b87ae886f0c5ffe5366bcd93
+Author: John Scott <johnrscott0@gmail.com>
+Date:   Thu Jul 12 20:19:27 2018 +0100
+
+    Push
+
+commit 27e1eeb40294479d46479fe8c8b9159dcf188f07
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Thu Jul 12 17:24:46 2018 +0100
+
+    Added write to file
+
+commit 59f7b273549ed2e3f1f13c275aecf68d63e0851a
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Thu Jul 12 16:54:18 2018 +0100
+
+    Fixed ENM estimate (used Frobenius norm)
+
+commit 86a481fba4e369f71bb9ca9e4e6b2abce57d7972
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Thu Jul 12 15:18:19 2018 +0100
+
+    Added a progress function
+
+commit a42c83ac46e48e3f52975f6140b6554418b47450
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Thu Jul 12 09:57:15 2018 +0100
+
+    Updated estimation
+
+commit 0cb9b1feb43d6ac211225560f4586aeccb25b4e0
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Mon Jul 2 17:38:54 2018 +0100
+
+    Updated all
+
+commit 214cd5bea00255a25efbd574a4871791ddf26524
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Wed Jun 27 17:01:34 2018 +0100
+
+    Everything else
+
+commit 3f58dfafd1de9ab8fa902ea034b9bc48d158caec
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Wed Jun 27 17:01:18 2018 +0100
+
+    Tested simulation again
+
+commit 93f5a32a7e01f19306d82f74b15940563d312820
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Wed Jun 27 17:00:17 2018 +0100
+
+    Added maximum likelihood tests
+
+commit ae09e7a580f659b6e624553c90df72c2d006498f
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Wed Jun 27 16:59:50 2018 +0100
+
+    Small changes
+
+commit 7acc06c7c044288bd16074944a9a1ac45de7ec56
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Wed Jun 27 16:59:24 2018 +0100
+
+    Started working on maximum likelihood
+
+commit 930b333e21bc5f0b1cff5776d9e60f3b158962b7
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Tue Jun 26 17:06:01 2018 +0100
+
+    Updated all
+
+commit 3c455f27fb7b04b01f92eeceabe0f0930af50a4c
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Tue Jun 26 16:52:59 2018 +0100
+
+    Fixed a bug
+
+commit 544eeedbd42bc5c3f3d29b164551845f5b9c9783
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Tue Jun 26 14:34:20 2018 +0100
+
+    Added all
+
+commit c05c57bf4dfa52ded9a0a855849df0f2e2d7d01a
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Tue Jun 26 13:51:19 2018 +0100
+
+    Sped up the measurement outcome simulation
+
+commit 0883ef4e3bbd6af3372f37eb911cf12fca36c2d5
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Tue Jun 26 12:09:42 2018 +0100
+
+    Update
+
+commit c79d3dc8dab368e306f4554b239255696921d0d3
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Tue Jun 26 12:09:26 2018 +0100
+
+    Changed * to np.matmul
+
+commit 484157a2744999a66e1886677464bb6d57bbbe1b
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Tue Jun 26 12:08:46 2018 +0100
+
+    Made the random sampling function faster
+
+commit 4c4fca3fb3f1c969c07c9064de26fdf9fedbbd2b
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Tue Jun 26 10:53:22 2018 +0100
+
+    Fixed a bug
+
+commit c4d0133d6e43fb518baf7e2a6e63bf3505d32385
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Tue Jun 26 10:35:27 2018 +0100
+
+    Updated all
+
+commit e54795472d5cabf23e112b3928b55113b638d974
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Tue Jun 26 10:35:13 2018 +0100
+
+    Updated random_density
+
+commit 1fc1b0a230164123598411f32b462bbc3f97ce49
+Author: John Scott <johnrscott0@gmail.com>
+Date:   Mon Jun 25 23:46:03 2018 +0100
+
+    Update all
+
+commit 5e3a415842da6c390bf60df9a301863c64f3b96b
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Mon Jun 25 17:06:32 2018 +0100
+
+    Updated
+
+commit 2ca365c80eb34933cc6667b824dd4fbcf4c7450f
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Mon Jun 25 17:00:14 2018 +0100
+
+    Updated all
+
+commit cd04eff040d0a1c3c28da8b30536ef7c6e040875
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Mon Jun 25 16:57:51 2018 +0100
+
+    Made better!
+
+commit 231035fd67b465eb266b3420f2704e73eac9fb67
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Mon Jun 25 14:41:05 2018 +0100
+
+    Updated all
+
+commit eef571b3b793309ba687dfe55bc8e5e2cecd0c3e
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Mon Jun 25 14:40:53 2018 +0100
+
+    Simplified simulation function
+
+commit a7468cd98b10a39671b4f0151710f678462ff77a
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Mon Jun 25 14:40:27 2018 +0100
+
+    Updated estimation function
+
+commit ab831fd9db2b0cf67ef1957084aa52e84d856943
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Mon Jun 25 14:40:12 2018 +0100
+
+    Taken projector calculation out of loop
+
+commit bcee6d07e19ce6be9680f409762435a10db23878
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Mon Jun 25 14:13:47 2018 +0100
+
+    Updated all
+
+commit 4f233c659b62ca94a917119789777de4526d8b7e
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Mon Jun 25 14:13:33 2018 +0100
+
+    Added profiling
+
+commit 439793f393be63dcf7c8f5b5e58e3ce2c872689d
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Mon Jun 25 11:02:31 2018 +0100
+
+    Updated all
+
+commit 736b515977fb3a4c4b87e8bdf1249dc0a39065a3
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Mon Jun 25 11:01:09 2018 +0100
+
+    Fixed some errors
+
+commit 52a79c002c53f79b66454ceb1eef5e59d7e32883
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Mon Jun 25 10:51:16 2018 +0100
+
+    Updated all
+
+commit 333d6b7955a2e311a2c66337e2d1b85db34cc521
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Mon Jun 25 10:51:05 2018 +0100
+
+    Improved distance functions
+
+commit 9d6f589bcaa94b601d3a2a35dd6b3662b086df16
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Mon Jun 25 10:50:40 2018 +0100
+
+    Made the plots look better
+
+commit 685a91ec4938dff07c0150d67ea372555c121fa7
+Author: John Scott <johnrscott0@gmail.com>
+Date:   Sat Jun 23 16:16:55 2018 +0100
+
+    Moved parameters into one place
+
+commit 7d4b6d87e48fa856d83b1ea70d19a02d4390a9de
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Fri Jun 22 14:47:16 2018 +0100
+
+    Added some leeway in the testing
+
+commit 0255d1290c189d2164abc005aaa77faca6ff920b
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Fri Jun 22 14:44:05 2018 +0100
+
+    Removed a bug
+
+commit cb55c707626aca23b40401d72db70d7fb517875b
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Thu Jun 21 19:07:33 2018 +0100
+
+    Updated all
+
+commit 2c6c4044b9c10124af3b52c6e8caaa3466dc4be2
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Thu Jun 21 19:06:53 2018 +0100
+
+    First version working
+
+commit cd6b781f6ed551d9c4a33fb2dfc160cdc9cd29a4
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Wed Jun 20 17:29:44 2018 +0100
+
+    Deleted a print statement
+
+commit b35b5f8be2917e95e8283dd5ac5ab224456e1f90
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Wed Jun 20 17:05:01 2018 +0100
+
+    Need to check everything
+
+commit 3f702bbbd1f9ecfa65ea6a6dfa28d0d400e0068d
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Wed Jun 20 17:02:06 2018 +0100
+
+    Updated all
+
+commit 8cef950807fdf352c4331834e1fd8837305bf502
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Wed Jun 20 17:01:55 2018 +0100
+
+    Using new linear_estimate function
+
+commit 3c5f4ddab8b427c072762181968a69bd0a2f3a31
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Wed Jun 20 17:00:37 2018 +0100
+
+    Improved the linear_estimate function
+
+commit 0dd7a3c19ddb63da3054457ada78c0dd9b4b7a1e
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Wed Jun 20 16:51:40 2018 +0100
+
+    Added some comments
+
+commit 5d5c93de06f55577c19dbf09c5e6246f0e74f1b2
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Wed Jun 20 16:48:38 2018 +0100
+
+    Updated all
+
+commit b9219efee4adae5e8ab0309e3dd2ef5028ac55cb
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Wed Jun 20 16:48:21 2018 +0100
+
+    Tested new simulation function
+
+commit c2fa4cc48a7b7441fa887f67b685bb624c71787d
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Wed Jun 20 16:47:58 2018 +0100
+
+    Need to improve the simulate function
+
+commit e30b5f60ac9b79352f082a04eb640f4ba4390930
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Wed Jun 20 09:25:09 2018 +0100
+
+    Improved the random_density function
+
+commit bd3544d2e8619b02e4f9df4bdc92b116be9e43ac
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Tue Jun 19 17:14:14 2018 +0100
+
+    Added to the script
+
+commit af13550e518d91d2b12e52056f4be80703bb687d
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Tue Jun 19 17:05:33 2018 +0100
+
+    Updated all
+
+commit b5ef963e6f779a60298617f91a5b27903f519f86
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Tue Jun 19 17:05:19 2018 +0100
+
+    Modified functions
+
+commit e03de5ab9d1087b0d0decb0407c217ff81fa3d31
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Tue Jun 19 17:04:55 2018 +0100
+
+    Updated to use new functions
+
+commit f368514f97f93d366f6e9bd1756eee7afb796243
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Tue Jun 19 17:04:34 2018 +0100
+
+    Modified functions
+
+commit f98713e18574d61f709532f57dbb0a9d77db134b
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Tue Jun 19 17:04:15 2018 +0100
+
+    Continued adding to script
+
+commit b1872f5f8dbd119d3135d85b1c5b91781c18d726
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Tue Jun 19 16:45:38 2018 +0100
+
+    Updated all
+
+commit ce249a0d0616881d70d4c83ae30888db4a240e81
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Tue Jun 19 16:45:23 2018 +0100
+
+    Updated to use new syntax
+
+commit a55bee2c96b2b1fdd3464274b12de2129f82052e
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Tue Jun 19 16:44:57 2018 +0100
+
+    Rearranged functions
+
+commit 20f3579824980888c75f6e6a781feace49a6cbd6
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Tue Jun 19 15:53:14 2018 +0100
+
+    Updated to use new functions
+
+commit c538b194f63c397b8a0db57921425bab3f15826d
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Tue Jun 19 15:52:57 2018 +0100
+
+    Added functions for computing state distances
+
+commit 138aaa7682d92a61fe98da9af044d068e71a2602
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Tue Jun 19 15:37:21 2018 +0100
+
+    Added fidelity
+
+commit 5aa56b694712a9b2141a56b72555e8802a68c305
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Tue Jun 19 12:01:11 2018 +0100
+
+    Added more summary stats
+
+commit 236be2a77d0114ff8ae27918898ea0a4e24f5de0
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Tue Jun 19 11:17:56 2018 +0100
+
+    Updated all
+
+commit 3d7c9aa7d7d7d13199b5305e00f13f115534c65c
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Tue Jun 19 11:15:14 2018 +0100
+
+    Minor changes to print statements
+
+commit 2f1fd412b47806041f16427d1c890bb6272babc9
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Tue Jun 19 11:13:46 2018 +0100
+
+    Minor changes to print statements
+
+commit 4ba63bc2c023ecb51383a67b81cc47276511406a
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Tue Jun 19 11:13:22 2018 +0100
+
+    Added summary statistics at the end
+
+commit ba2c6e98c3100ba0b4bf25dc442e2394c93f7ce9
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Tue Jun 19 10:01:04 2018 +0100
+
+    Added comments on norm calculation
+
+commit c2932bbcb766404f6789f863fa793d0008bb333e
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Tue Jun 19 09:51:39 2018 +0100
+
+    Added some comments
+
+commit 1f35a2db9fd0b793626fafda780f6a58e152fc0b
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Fri Jun 15 13:10:59 2018 +0100
+
+    Update repo
+
+commit 06f6ca4c9cd9446326e8484f57f60c1fec1f830c
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Fri Jun 15 13:06:47 2018 +0100
+
+    Removed clear screen
+
+commit a1f22018b4c499f96c1bb917e9ab712bc2475bba
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Fri Jun 8 16:19:09 2018 +0100
+
+    Changed to dictionary for measurements
+
+commit 1202941fa4c5ade8a9eee5594eff75081ae54cab
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Fri Jun 8 16:18:33 2018 +0100
+
+    Updated the simulation functions
+
+commit cd227a1f8819248efbe2f6cb7ec33e7c023977d7
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Fri Jun 8 16:16:44 2018 +0100
+
+    Changed measurement data to key value dictionary
+
+commit 5e6eb3e4b840757854f717003f5e5e71a0d86c0f
+Author: John Scott <johnrscott0@gmail.com>
+Date:   Fri Jun 8 00:48:16 2018 +0100
+
+    Commit all
+
+commit 26932eb6c0a82c9c8befddcba45a4a498cf6e1e6
+Author: John Scott <johnrscott0@gmail.com>
+Date:   Fri Jun 8 00:48:09 2018 +0100
+
+    Finished density matrix generating routine
+
+commit 11a1865ce86f5507666350ebba0d38987dad1b7d
+Author: John Scott <johnrscott0@gmail.com>
+Date:   Fri Jun 8 00:11:01 2018 +0100
+
+    Finished first version of density matrix input
+
+commit e8fda129052eba2f8bb2552d8b970117b13f496f
+Author: John Scott <johnrscott0@gmail.com>
+Date:   Fri Jun 8 00:01:06 2018 +0100
+
+    Deleted a duplicate function
+
+commit 6c1c7637a3e5e704fc22e6fdbed8d0dfd38bc144
+Author: John Scott <johnrscott0@gmail.com>
+Date:   Thu Jun 7 23:56:31 2018 +0100
+
+    Added VS stuff
+
+commit 5fa42c8a73498f3f344ab87927862b7cecf9ee28
+Author: John Scott <johnrscott0@gmail.com>
+Date:   Thu Jun 7 23:54:19 2018 +0100
+
+    Started working on user input density matrix
+
+commit fc08be2dee460f91f2135b8a7cdae2e7b7cbe723
+Author: John Scott <johnrscott0@gmail.com>
+Date:   Thu Jun 7 23:53:42 2018 +0100
+
+    Added functions for user interaction
+
+commit aa8a0339403a73b0670537d64506e794716266c0
+Author: John Scott <johnrscott0@gmail.com>
+Date:   Thu Jun 7 23:50:48 2018 +0100
+
+    Added several functions for user input
+
+commit e69d348af6bdbdc606d076196c6a0d1cd879853b
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Thu Jun 7 17:09:42 2018 +0100
+
+    Added some test user interaction
+
+commit 333e2863ad4e32c31368edd8cef53e186e266bd2
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Thu Jun 7 17:09:04 2018 +0100
+
+    Added a file of user interaction functions
+
+commit 208b97e257aef97cfa11d946f8c6d4f81491823f
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Thu Jun 7 16:39:03 2018 +0100
+
+    Added auto bash shell execution
+
+commit 5f433470eebe4c427c35ccf7fbae798d1b80475a
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Thu Jun 7 16:38:04 2018 +0100
+
+    Deleted print
+
+commit ecbe798bd8d41969d69518d6eb1089778cd153ad
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Thu Jun 7 16:28:15 2018 +0100
+
+    Modified the main script to use external functions
+
+commit c380063d2bfab72adb2cbe12b8bfd95d2df21410
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Thu Jun 7 16:27:22 2018 +0100
+
+    Moved simulation and estimation functions into seperate files
+
+commit 6bfa6231b2fd39c22c3a6e93ef9daf3a3b0cfc98
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Thu Jun 7 10:38:30 2018 +0100
+
+    Fixed the bugs -- first version done
+
+commit d7c79d5b2e7d8420bb8c45c91ad9796d0fe56582
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Wed Jun 6 17:14:18 2018 +0100
+
+    Need to fix bugs
+
+commit 63e6595f784bdb44b05f9aecb3c0bf11683747a3
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Wed Jun 6 16:32:36 2018 +0100
+
+    Added to the script
+
+commit 3be09a60d8cc7bbfe3267fea76be22f2a3975c32
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Wed Jun 6 15:08:25 2018 +0100
+
+    Changed some comments
+
+commit 32dcca3af540097dab7bd0cc595856c529e545f1
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Wed Jun 6 15:07:33 2018 +0100
+
+    Started writing the simplest state tomography simulation
+
+commit 951748ee7fd2bef866b841c3b99802aa493c7263
+Author: johnrscott <johnrscott0@gmail.com>
+Date:   Wed Jun 6 12:05:40 2018 +0100
+
+    Initial commit
