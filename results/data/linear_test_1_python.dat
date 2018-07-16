@@ -1,0 +1,19 @@
+Distances between estimated and original density matrices using various distances:
+
+Number of purity values tried = 10
+Number of density matrices per purity parameter = 500
+Total number of measurements for each of X, Y and Z = 500
+
+PURITY, 	OPERATOR, 	TRACE, 		FIDELITY, 	NON PHYSICAL
+0.00000,	0.17737,	0.25085, 	0.25069, 	0.17000
+0.10000,	0.15934,	0.22534, 	0.17092, 	0.00000
+0.20000,	0.11304,	0.15986, 	0.11662, 	0.00000
+0.30000,	0.08334,	0.11786, 	0.08458, 	0.00000
+0.40000,	0.05248,	0.07422, 	0.05274, 	0.00000
+0.50000,	0.03711,	0.05248, 	0.03716, 	0.00000
+0.60000,	0.05317,	0.07520, 	0.05344, 	0.00000
+0.70000,	0.08618,	0.12187, 	0.08739, 	0.00000
+0.80000,	0.11604,	0.16411, 	0.12002, 	0.00000
+0.90000,	0.14914,	0.21091, 	0.15985, 	0.00000
+
+Total running time = 10.972s
