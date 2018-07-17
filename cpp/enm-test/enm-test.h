@@ -23,6 +23,8 @@
 //#define DEBUG_PRINT_EIGEN
 #define DEBUG_PRINT_DISTANCE_AVERAGES
 
+#define SHOW_PROGRESS
+
 #include <iostream>
 #include <complex>
 #include <cstdlib>
@@ -36,6 +38,7 @@
 #include "estimation.h"
 #include "stats.h"
 #include "proj.h"
+#include "progress.h"
 
 typedef Eigen::Matrix<std::complex<double>,
 		      Eigen::Dynamic,

@@ -1,0 +1,16 @@
+/************************************************************
+* Title: File for printing progress
+*
+* Date created: 17th July 2018
+*
+* Language: Cpp
+*
+* Overview: This file contains various functions for
+*           generating simulated states and measurement
+*           data. 
+*
+* Details: header
+*
+* Usage: Include in the main program
+*
+************************************************************/

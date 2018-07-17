@@ -1,10 +1,10 @@
-# Print progress to the console
+// Print progress to the console
 
 import cProfile
 import pstats
 import numpy as np
 
-def show_progress(pr,p):
+int show_progress(pr,p):
     rem = "?"
     pr.disable()
     pr.create_stats()

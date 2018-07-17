@@ -57,9 +57,9 @@
 int main() {
 
   // Start the clock!
-  auto start = std::chrono::steady_clock::now();
+  std::chrono::time_point<std::chrono::steady_clock> start = std::chrono::steady_clock::now();
 
-
+  
   // Step 0: Seed the random number generators
   //
   // The random engine is initialised outside the main program
@@ -176,8 +176,8 @@ int main() {
       // to keep using the dp variable.
       //
       x = x_start + k * (x_end - x_start)/M;
-      //MatrixXc dens = random_density(x, gen);
-      MatrixXc dens(2,2); dens << x,0,0,1-x;
+      MatrixXc dens = random_density(x, gen);
+      //MatrixXc dens(2,2); dens << x,0,0,1-x;
       
       // Step 2: Generate measurement data
       //
@@ -238,6 +238,13 @@ int main() {
     double mean_fid = mean(dist_fid, N);
     non_physical[k] = non_physical_count/N;
 
+#ifdef SHOW_PROGRESS
+    // Show progress
+    double p = static_cast<double>(k+1)/M;
+    show_progress(start,p);
+#endif
+    
+    
 #ifdef DEBUG
 #ifdef DEBUG_PRINT_DISTANCE_AVERAGES
     std::cout << std::endl

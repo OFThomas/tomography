@@ -15,6 +15,7 @@
 #
 #############################################################
 
+import math
 import numpy as np
 from scipy.stats import unitary_group as ug
 from input import *
@@ -28,39 +29,29 @@ from input import *
 # more details.
 #
 def random_unitary():
-
+  
   # Pick alpha, phi and chi uniformly in the
   # interval [0, 2*pi]
-  std::uniform_real_distribution<double> uniform_1(0.0, 2 * M_PI);
-  double alpha = uniform_1(generator);
-  double psi = uniform_1(generator);
-  double chi = uniform_1(generator);
+  alpha = np.random.uniform(0, 2 * math.pi)
+  psi = np.random.uniform(0, 2 * math.pi)
+  chi = np.random.uniform(0, 2 * math.pi)
   # Pick xi uniformly from [0,1]
-  std::uniform_real_distribution<double> uniform_2(0.0, 1.0);
-  double xi = uniform_2(generator);
+  xi = np.random.uniform(0, 1)
 
   # Compute derived quantities
-  double phi = std::asin(std::sqrt(xi));
-  std::complex<double> glob =  std::exp(std::complex<double>(0,alpha));
+  phi = np.arcsin(np.sqrt(xi))
+  glob =  np.exp(1j * alpha)
   
-  // Compute matrix elements
-  std::complex<double> a = std::exp(std::complex<double>(0,psi)) * std::cos(phi); 
-  std::complex<double> b = std::exp(std::complex<double>(0,chi)) * std::sin(phi);
-
-  // Write the matrix
-  MatrixXc U(2,2); U << a, b, -std::conj(b), std::conj(a);
-  // Global phase
-  U = glob * U;
-
-#ifdef DEBUG
-#ifdef DEBUG_PRINT_UNITARY
-  std::cout << U << "This is it" << std::endl
-	    << U * U.adjoint() << "What is this?"
-	    << std::endl;
-#endif
-#endif
-  return U;
-}
+  # Compute matrix elements
+  a = np.exp(1j * psi) * np.cos(phi) 
+  b = np.exp(1j * chi) * np.sin(phi)
+  
+  # Write the matrix
+  U = np.array([[a, b], [-np.conj(b), np.conj(a)]])
+  # Global phase
+  U = [glob * x for x in U]
+  U = np.asmatrix(U)
+  return U 
 
 
 # Function: random_density(x)
@@ -77,13 +68,14 @@ def random_unitary():
 #   than use the random unitary function.
 #
 def random_density(x):
-    cmat = np.random.random([2,2]) + 1j * np.random.random([2,2])
-    U = np.linalg.qr(cmat)[0]
-    #U = ug.rvs(2) # Random unitary
-    U_dag = np.matrix.getH(np.asmatrix(U))
-    diag = [[x,0],[0,1-x]]
-    dens = np.matmul(np.matmul(U, diag), U_dag)
-    return diag
+  #cmat = np.random.random([2,2]) + 1j * np.random.random([2,2])
+  #U = np.linalg.qr(cmat)[0]
+  #U = ug.rvs(2) # Random unitary
+  U = random_unitary()
+  U_dag = np.matrix.getH(np.asmatrix(U))
+  diag = [[x,0],[0,1-x]]
+  dens = np.matmul(np.matmul(U, diag), U_dag)
+  return diag
 
 # Function: density(dp)
 #
