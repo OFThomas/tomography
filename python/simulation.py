@@ -19,6 +19,50 @@ import numpy as np
 from scipy.stats import unitary_group as ug
 from input import *
 
+# Function: Generate random unitary
+#
+# The method is to parametrise the unitary
+# group and then select the right distribution
+# for the parameters. See '2009 Ozols - How to
+# generate a random unitary matrix', page 5, for
+# more details.
+#
+def random_unitary():
+
+  # Pick alpha, phi and chi uniformly in the
+  # interval [0, 2*pi]
+  std::uniform_real_distribution<double> uniform_1(0.0, 2 * M_PI);
+  double alpha = uniform_1(generator);
+  double psi = uniform_1(generator);
+  double chi = uniform_1(generator);
+  # Pick xi uniformly from [0,1]
+  std::uniform_real_distribution<double> uniform_2(0.0, 1.0);
+  double xi = uniform_2(generator);
+
+  # Compute derived quantities
+  double phi = std::asin(std::sqrt(xi));
+  std::complex<double> glob =  std::exp(std::complex<double>(0,alpha));
+  
+  // Compute matrix elements
+  std::complex<double> a = std::exp(std::complex<double>(0,psi)) * std::cos(phi); 
+  std::complex<double> b = std::exp(std::complex<double>(0,chi)) * std::sin(phi);
+
+  // Write the matrix
+  MatrixXc U(2,2); U << a, b, -std::conj(b), std::conj(a);
+  // Global phase
+  U = glob * U;
+
+#ifdef DEBUG
+#ifdef DEBUG_PRINT_UNITARY
+  std::cout << U << "This is it" << std::endl
+	    << U * U.adjoint() << "What is this?"
+	    << std::endl;
+#endif
+#endif
+  return U;
+}
+
+
 # Function: random_density(x)
 #
 #   Generate a density matrix

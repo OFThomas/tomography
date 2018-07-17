@@ -37,7 +37,7 @@ MatrixXc random_unitary(std::mt19937 & generator) {
   std::uniform_real_distribution<double> uniform_2(0.0, 1.0);
   double xi = uniform_2(generator);
 
-  // Compue derived quantities
+  // Compute derived quantities
   double phi = std::asin(std::sqrt(xi));
   std::complex<double> glob =  std::exp(std::complex<double>(0,alpha));
   

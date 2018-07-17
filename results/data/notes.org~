@@ -1,0 +1,3 @@
+* Linear estimator tests
+** 17th July 2018 -- Tests without random unitaries
+Tested both the cpp and python programs in the case of a diagonal density matrix (i.e. no random unitary generation). The output of estimation errors measured using various distances are similar, meaning the norms are probably right. The results are in linear_test_no_random_unitary_[cpp/python]_1.dat. When
