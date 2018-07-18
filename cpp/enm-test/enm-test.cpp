@@ -197,7 +197,8 @@ int main() {
       // Then tr(pI) is computed by requiring that
       // the density matrix be normalised
       //
-      MatrixXc dens_est = linear_estimate_XYZ(X_data, Y_data, Z_data, S);
+      //MatrixXc dens_est = linear_estimate_XYZ(X_data, Y_data, Z_data, S);
+      MatrixXc dens_est = enm_estimate_XYZ(X_data, Y_data, Z_data);
 
       // Step 4: Compute and the distances
       //

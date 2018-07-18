@@ -19,6 +19,8 @@
 #include <iostream>
 #include "stats.h"
 #include "Eigen/Dense"
+#include <vector>
+#include "nlopt.hpp"
 
 typedef Eigen::Matrix<std::complex<double>,
 		      Eigen::Dynamic,
@@ -55,3 +57,13 @@ MatrixXc linear_estimate_XYZ(double X_data[],
 			     double Y_data[],
 			     double Z_data[],
 			     int S);
+
+
+// Function: enm_estimate_XYZ(X_data, Y_data, Z_data)
+//
+// This function estimates the density matrix using
+// the extended norm minimisation method.
+//
+MatrixXc enm_estimate_XYZ(double X_data[],
+			  double Y_data[],
+			  double Z_data[]); 
