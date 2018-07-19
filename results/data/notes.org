@@ -1,3 +1,13 @@
 * Linear estimator tests
 ** 17th July 2018 -- Tests without random unitaries
 Tested both the cpp and python programs in the case of a diagonal density matrix (i.e. no random unitary generation). The output of estimation errors measured using various distances are similar, meaning the norms are probably right. The results are in linear_test_no_random_unitary*. When the random unitaries are included the output distribution is different -- so something is up with the generation of random unitaries. However, implementing both random unitaries in exactly the same way (from the paper '2009 Ozols - How to generate a random unitary matrix') the output distributions look very similar -- those results are in linear_test_with_randomies*. Compared to the case without random unitaries, only the fidelity looks substantially different (flat in the case of no random unitaries, and U shaped when random unitaries are included).
+* ENM estimator tests
+** 19th July 2018 -- Tested the ENM routine for first time
+*** enm_test_with_random_unitaries_cpp_1.dat. 
+The run took about 5 mins (compared to the 25 hours ish with python). The density matrices were generated using uniform random unitaries generated acording to Ozols' paper (not the QR trick). However there is a problem with the optimisation routine because matrices are still coming out unphysical. However, the routine `nearly' works because the shapes of the graphs are consistent with those obtained from the linear estimator. The algorithm is Nelder-Mead.
+*** enm_test_with_random_unitaries_cpp_2.dat
+This run clearly failed. I tried to use a different algorithm (SLSQP). It gave an error saying it didn't converge, and when I forced it to continue the results came out odd. Probably needs some other parameters to be specified. It runs much faster though.
+*** enm_test_with_random_unitaries_cpp_3.dat
+This seemed to work better -- I added a stopping criteria to the optimisation algorithm which seemed to make it converge better. I just arbitrarily fixed this parameter called ftol_rel (a measure of the relative change in function from one iteration to the next) at 1e-5. 
+*** enm_test_with_random_unitaries_cpp_4.dat
+This run used SLSQP again, which seems to work if you specify the ftol_rel stopping criterion. It runs much faster than Nelder-Mead.

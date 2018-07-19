@@ -13,8 +13,9 @@
 *
 ************************************************************/
 
-#define DEBUG_PRINT_MEANS
-#define DEBUG_PRINT_ESTIMATE
+//#define DEBUG_PRINT_MEANS
+//#define DEBUG_PRINT_ESTIMATE
+#define DEBUG_PRINT_ENM_OUTPUT
 
 #include <iostream>
 #include "stats.h"
@@ -66,4 +67,5 @@ MatrixXc linear_estimate_XYZ(double X_data[],
 //
 MatrixXc enm_estimate_XYZ(double X_data[],
 			  double Y_data[],
-			  double Z_data[]); 
+			  double Z_data[],
+			  int S); 

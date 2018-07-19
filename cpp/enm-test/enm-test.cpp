@@ -177,7 +177,7 @@ int main() {
       //
       x = x_start + k * (x_end - x_start)/M;
       MatrixXc dens = random_density(x, gen);
-      //MatrixXc dens(2,2); dens << x,0,0,1-x;
+      //MatrixXc dens(2,2); dens << 1,0,0,0;
       
       // Step 2: Generate measurement data
       //
@@ -198,7 +198,7 @@ int main() {
       // the density matrix be normalised
       //
       //MatrixXc dens_est = linear_estimate_XYZ(X_data, Y_data, Z_data, S);
-      MatrixXc dens_est = enm_estimate_XYZ(X_data, Y_data, Z_data);
+      MatrixXc dens_est = enm_estimate_XYZ(X_data, Y_data, Z_data, S);
 
       // Step 4: Compute and the distances
       //

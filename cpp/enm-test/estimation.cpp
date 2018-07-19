@@ -88,12 +88,16 @@ MatrixXc linear_estimate_XYZ(double X_data[],
 }
 
 // The objective function d is the distance between two matrices
-// parametrised by X and Y. 
+// parametrised by X and Y.
+//
+// The last parameter void * is expected to be MatrixXc *
 double d(const std::vector<double> & x, std::vector<double> & grad, void * f_data ) {
-  double thing{*static_cast<double*>(f_data)};
-  std::cout << thing;
-  abort();
-  return x[0] - thing;
+  // x specifies dens = T T^
+  MatrixXc T(2,2); T << x[0], 0, std::complex<double>(x[1],x[2]), x[3];
+  MatrixXc dens_1 = T * T.adjoint();
+  MatrixXc dens_2 = * static_cast<MatrixXc * >(f_data);
+  double distance = distance_trace(dens_1, dens_2);
+  return distance;
 }
 
 // Function: enm_estimate_XYZ(X_data, Y_data, Z_data)
@@ -101,50 +105,62 @@ double d(const std::vector<double> & x, std::vector<double> & grad, void * f_dat
 // This function estimates the density matrix using
 // the extended norm minimisation method.
 //
+// This estimation method first uses the linear
+// estimator to get an initial estimate of the
+// density matrix, and then using a minimisation
+// procedure to find the closest physical density
+// matrix to this estimate using the trace norm.
+//
 MatrixXc enm_estimate_XYZ(double X_data[],
 			  double Y_data[],
-			  double Z_data[]) {
+			  double Z_data[],
+			  int S) {  
+  // Estimate the density matrix with the linear estimator
+  MatrixXc dens_lin = linear_estimate_XYZ(X_data, Y_data, Z_data, S);
 
+  // Something that would speed up the algorithm would be
+  // to check whether the density matrix is physical here,
+  // then skip the optimisation procedure if it is.
+  
   // Create an nlop object
-  nlopt::opt opt(nlopt::LN_NELDERMEAD, 4); // 4 optimisation parameters
+  nlopt::opt opt(nlopt::LD_SLSQP/*LN_NELDERMEAD*/, 4); // 4 optimisation parameters
   // Set objective function
-  int a{5};
-  int * thing{&a};
-  opt.set_min_objective(d, thing);
+  double a{5};
+  double* thing{&a};
+  opt.set_min_objective(d, &dens_lin);
+  opt.set_ftol_rel(1e-5);
+  double ftol_rel = opt.get_ftol_rel();
+  //std::cout << ftol_rel;
+  //abort();
   std::vector<double> x{0,0,0,0};
 
   // Variable to contain the minimum of the function
   double minf;
 
+  // Declare variables outside try
+  MatrixXc T(2,2); 
+  MatrixXc dens_enm;
+  
   // Do the optimisation
   try {
     nlopt::result result = opt.optimize(x,minf);
-    std::cout << "This is the output: " << minf << std::endl;
-    std::cout << "The optimum x value is: "
-	      << x[0] << ", " << x[1] << ", "
-	      << x[2] << ", " << x[3] << std::endl;
-    abort();
+    // Reconstruct the density matrix
+    T << x[0], 0, std::complex<double>(x[1],x[2]), x[3];
+    dens_enm = T * T.adjoint();
+#ifdef DEBUG
+#ifdef DEBUG_PRINT_ENM_OUTPUT
+    std::cout << "Linear estimator: " << std::endl
+	      << dens_lin << std::endl
+	      << "ENM estimator: " << std::endl
+	      << dens_enm << std::endl;
+#endif
+#endif
   }
   catch (std::exception & e) {
     std::cout << "nlopt failed: " << e.what() << std::endl;
     abort();
   }
     
-
+  return dens_enm;
     
-  /*
-  def d(x,rho_2):
-            # x specifies rho = T T^
-            rho_1 = np.matmul(np.array([[x[0], 0],[x[1]+1j*x[2], x[3]]]),np.array([[x[0], x[1]-1j*x[2]],[0, x[3]]]))
-            distance = sts.distance_trace(rho_1, rho_2)
-            return distance    
-
-        rho_linear = linear_estimate_XYZ(X_data, Y_data, Z_data)
-        result = sc.optimize.minimize(d, [1,1,1,1], args=rho_linear)
-        x = result.x
-        rho = np.matmul(np.array([[x[0], 0],[x[1]+1j*x[2], x[3]]]),np.array([[x[0], x[1]-1j*x[2]],[0, x[3]]]))
-        return rho, rho_linear
-  */
-
-  
 }
