@@ -55,6 +55,29 @@ def linear_estimate_XYZ(X_data, Y_data, Z_data):
     dens_est = (mean_X * X + mean_Y * Y + mean_Z * Z + I)/2
     return dens_est
 
+# Function: linear_estimate(data_1, meas_1,
+#                           data_2, meas_2,
+#                           data_3, meas_3)
+#
+# This function computes the linear estimator
+# using measurements from arbitrary linearly
+# independent Hermitian measurement matrices
+# (with respect to the Hilbert-Schmidt inner
+# product.)
+def linear_estimate(data_1, meas_1,
+                    data_2, meas_2,
+                    data_3, meas_3):
+    '''
+    I = np.matrix([[1,0],[0,1]])
+    X = np.matrix([[0,1],[1,0]])
+    Y = np.matrix([[0,-1j],[1j,0]])
+    Z = np.matrix([[1,0],[0,-1]])
+    mean_X = np.mean(X_data)
+    mean_Y = np.mean(Y_data)
+    mean_Z = np.mean(Z_data)
+    dens_est = (mean_X * X + mean_Y * Y + mean_Z * Z + I)/2
+    return dens_est
+    '''
 
 class ML:
 

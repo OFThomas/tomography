@@ -20,6 +20,31 @@ import numpy as np
 from scipy.stats import unitary_group as ug
 from input import *
 
+
+# Function: Generate projectors
+#
+# The function takes in Hermitian
+# matrices and outputs arrays
+# containing the projectors
+#
+def projectors(A,B,C):
+  values_A, vectors_A = np.linalg.eig(A)
+  proj_A = np.zeros([2,2,2])
+  proj_A[0,:,:] = np.matmul(vectors_A[:,0], np.matrix.getH(vectors_A[:,0]))
+  proj_A[1,:,:] = np.matmul(vectors_A[:,1], np.matrix.getH(vectors_A[:,1]))
+  
+  values_B, vectors_B = np.linalg.eig(B)
+  proj_B = np.zeros([2,2,2])
+  proj_B[0,:,:] = np.matmul(vectors_B[:,0], np.matrix.getH(vectors_B[:,0]))
+  proj_B[1,:,:] = np.matmul(vectors_B[:,1], np.matrix.getH(vectors_B[:,1]))
+  
+  values_C, vectors_C = np.linalg.eig(C)
+  proj_C = np.zeros([2,2,2])
+  proj_C[0,:,:] = np.matmul(vectors_C[:,0], np.matrix.getH(vectors_C[:,0]))
+  proj_C[1,:,:] = np.matmul(vectors_C[:,1], np.matrix.getH(vectors_C[:,1]))
+
+  return proj_A, proj_B, proj_C, values_A, values_B, values_C
+
 # Function: Generate random unitary
 #
 # The method is to parametrise the unitary
