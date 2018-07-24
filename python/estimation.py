@@ -55,6 +55,20 @@ def linear_estimate_XYZ(X_data, Y_data, Z_data):
     dens_est = (mean_X * X + mean_Y * Y + mean_Z * Z + I)/2
     return dens_est
 
+# Function: linear_estimate_adapt(X_data, Y_data, Z_data)
+#
+# The function takes in data from three arbitrary
+# measurement 
+def linear_estimate_adapt(M1_data, M2_data, M3_data,
+                          M1, M2, M3):
+    I = np.matrix([[1,0],[0,1]])
+    mean_M1 = np.mean(M1_data)
+    mean_M2 = np.mean(M2_data)
+    mean_M3 = np.mean(M3_data)
+    dens_est = (mean_M1 * M1 + mean_M2 * M2 + mean_M3 * M3 + I)/2
+    return dens_est
+
+
 # Function: linear_estimate(data_1, meas_1,
 #                           data_2, meas_2,
 #                           data_3, meas_3)
